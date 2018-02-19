@@ -1,0 +1,123 @@
+h1, h2, p, label {
+ text-align: center;
+ font-family: 'Fauna One', serif;
+ font-size: 14px;
+}
+
+body {
+	
+	
+}
+.float-right {
+    text-align: right;
+    float: right;
+}
+
+.float-left {
+    text-align: left;
+    float: left;
+}
+
+.float-center {
+    text-align: center;
+    float: center;
+}
+
+.center {
+    text-align: center;
+    margin: 0 20px;
+}
+
+.size {
+	width: 600px;
+    margin: 0 auto 30px auto;
+}
+form {
+	float: left;
+	display: inline-block;	
+	margin: 0 15px 0 0;
+}
+
+.formGroup {
+	width: 100%;
+	height: 100px;
+}
+
+h1 {font-family: 'Playfair Display', serif; font-size: 30px; text-transform: uppercase; margin: 50px 0 3px 0;}
+h3 {letter-spacing: 1px; margin: 3px 0;}
+h3:nth-of-type(2) {margin-top: 60px;}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #00ff00; 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px #00ff00; 
+}
+
+.gold {
+	color: #fcc726;
+}
+
+.red {
+	color:#f44848;
+}
+
+.teal {
+	color: #00bfff;
+}
+
+.white {
+	color: #fff;
+}
+
+.d-none {
+	display: none;
+	
+}
+
+.inputClass {
+	border: 0;
+	outline: 0;
+	border-bottom: 1px solid #fafafa;
+	background: black;
+	outline: none;
+	color: #80ff80;
+	font-size: 16px;
+	font-family: 'Inconsolata', monospace;
+	width: auto;
+	margin: 0 auto;
+	padding: 0 0 0 5px;	
+}
+
+#Monitor {
+	width: 500px;
+	height: 300px;
+	overflow: auto;
+	color: #00ff00;
+	margin: 30px auto 0 auto;
+	padding: 10px 20px;
+	border-radius: 20px 20px 0 0;
+	font-family: 'Inconsolata', monospace;
+	text-align: left;
+}
+
+#MonitorBottom {
+	width: 500px;
+	height: 50px;
+	color: #00ff00;
+	background: #000;
+	margin: 0 auto;
+	padding: 10px 20px;
+	border-radius: 0 0 20px 20px;
+	font-family: 'Inconsolata', monospace;
+	text-align: left;
+}
+
+
