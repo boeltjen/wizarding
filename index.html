@@ -39,8 +39,9 @@
 	<br/>-->
 	<br/><p>{{storySelectSelected}}</p>
 	<button class="btn btn-sm btn-success" ng-click="createNewStory()">New</button>	
-	<button class="btn btn-sm btn-success" onclick="alert(updateStoriesDB())">Save</button>	
-	<button class="btn btn-sm btn-success" ng-click="updateStoriesLocations()">update</button>	
+	<button class="btn btn-sm btn-success" onclick="alert(updateStoriesDB())">Save</button>
+	<button class="btn btn-sm btn-success" ng-click="createNewStory('duplicate')">Duplicate</button>	
+
 
 	<div class="table-responsive" id="conditionSelectors" ng-init="itemKind='condition'">
 		<h2>Story Conditions:</h2>
@@ -62,9 +63,20 @@
 					</td>
 
 					<td style="width:23%">
-						<select class="valueSelect" ng-model="selectedItemValue[itemKind]" ng-options="value as value for (value,valueObj) in aspectsActionsValues[itemKind][selectedItemAspect[itemKind]][selectedItemAction[itemKind]]">
+						<!--<select class="valueSelect" ng-model="selectedItemValue[itemKind]" ng-options="value as value for (value,valueObj) in aspectsActionsValues[itemKind][selectedItemAspect[itemKind]][selectedItemAction[itemKind]]" ng-change="promptForValue()">
 						<option disabled value="">Select Value</option>
-						</select>								
+						</select>-->
+						<span class="valueInput">
+							<input type="text" style="width: 100%;" ng-model="selectedItemValue[itemKind]"></input>
+							<!--
+							<button type="button" class="btn btn-success btn-xs">
+								<span class="glyphicon glyphicon-ok"></span>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+							-->
+						</span>
 					</td>
 					<td style="width:26%">
 						<button class="updateItem btn btn-xs btn-success" ng-click="updateItem(itemKind)"></button>
@@ -98,7 +110,8 @@
 	<div class="size">
 		<div class="float-left">
 			<label for="storyLocation" class="float-left">Story Takes Place in:&nbsp;</label>
-			<input type="text" id="storyLocation" name="storyLocation" ng-model="storySelectSelected.location"></input><br>
+			<input type="text" id="storyLocation" name="storyLocation" ng-model="storySelectSelected.location" disabled></input> <button class="btn btn-success btn-xs" ng-click="createNewStory('update')">Edit</button>
+			<br>
 			<label for="storyOrder" class="float-left">Story Order:&nbsp;</label>
 			<input type="text" id="storyOrder" name="storyOrder" ng-model="storySelectSelected.order"></input>
 		</div>
