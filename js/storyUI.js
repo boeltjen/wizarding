@@ -59,7 +59,7 @@ app.controller('storyCtrl', function($scope) {
 
 	
     var blankStory = {
-		location: "",
+		location: "blankStory",
 		story: "",
 		order: "",
 		conditions: [],
@@ -67,36 +67,56 @@ app.controller('storyCtrl', function($scope) {
 	};
 	//updateImpacts Functions
 	
-	$scope.createNewStory = function() {
-		var tempLocationName = $story.storySelectSelected.location;
+	$scope.createNewStory = function(updateCreate) {
+		var tempLocationName = $scope.storySelectSelected.location;
 		tempLocationName = prompt("Please enter the location name for your story",tempLocationName);
-		console.log(tempLocationName);
-		blankStory.location = tempLocationName;
-		var newStoryID = $scope.stories.push(blankStory);
-		$scope.cancelItem('condition');
-		$scope.cancelItem('impact');
-		$scope.storySelectSelected = $scope.stories[newStoryID-1];
-		console.log("created a blank story, ID#" + (newStoryID-1));
-		var newStoryID = $scope.stories.push(blankStory);
-
+		//if user cancelled or entered blank, then do nothing, else:
+		if(tempLocationName) {
+			if(updateCreate == 'update') {
+				$scope.storySelectSelected.location = tempLocationName;
+				//run this hack to update the story select dropdown
+				var tempStoryID = $scope.stories.push(blankStory);
+				setTimeout(function(){
+					//added a slight timedelay here to allow the DOM to render so that the optGroups update with the locations.  For some reason it makes all the difference.  It's a hack (on top of a hack of creating new and deleting), so feel free to update with a better solution.
+					$scope.stories.splice((tempStoryID-1),1);
+				}, 1);
+				//******************
+				console.debug("updated location name to " + tempLocationName);
+			} else if(updateCreate == 'duplicate') {
+				var duplicateStory = JSON.parse(JSON.stringify($scope.storySelectSelected));
+				duplicateStory.location = tempLocationName;
+				var newStoryID = $scope.stories.push(duplicateStory);
+				$scope.cancelItem('condition');
+				$scope.cancelItem('impact');
+				$scope.storySelectSelected = $scope.stories[newStoryID-1];
+				console.debug("Duplicated current story.  New story ID#" + (newStoryID-1));
+			} else {
+				blankStory.location = tempLocationName;
+				var newStoryID = $scope.stories.push(blankStory);
+				$scope.cancelItem('condition');
+				$scope.cancelItem('impact');
+				$scope.storySelectSelected = $scope.stories[newStoryID-1];
+				console.debug("created a blank story, ID#" + (newStoryID-1));	
+			}
+		}
 	}
 	
 	
 	$scope.showDB = function() {
-		console.log(storiesDBobj);
+		console.debug(storiesDBobj);
 		
 		
 	}
 
 	$scope.updateStoriesLocations = function(obj) {
-		console.log(obj);
+		//console.debug(obj);
 		return (obj.location);
 		/*$scope.storiesLocations = {};
 		$scope.stories.forEach( function(storyElement) {
 			$scope.storiesLocations[storyElement.location] = true;			
 		});
 
-		console.log($scope.storiesLocations);		*/
+		console.debug($scope.storiesLocations);		*/
 	}	
 	
 	$scope.addItem = function(itemType) {
@@ -106,16 +126,16 @@ app.controller('storyCtrl', function($scope) {
 				value: ""
 		};
 		if (itemType == undefined) {
-			console.log("what is the item type?");
+			console.debug("what is the item type?");
 		} else {
 			switch(itemType) {
 				case "condition":
 					$scope.cancelItem(itemType);
 
 					$scope.storySelectSelected.conditions.push(blankItemObj);
-					//$scope.$on('LastRepeaterElement', function(){console.log($("#conditionIndex3").parent().parent().html());});
+					//$scope.$on('LastRepeaterElement', function(){console.debug($("#conditionIndex3").parent().parent().html());});
 					
-					//console.log($("#conditionIndex2").parent().parent().html());
+					//console.debug($("#conditionIndex2").parent().parent().html());
 					//$scope.editItem("condition",$scope.storySelectSelected.conditions.length-1);
 					break;
 				case "impact":
@@ -134,18 +154,44 @@ app.controller('storyCtrl', function($scope) {
 		var editIndex = false;
 		var updatedItemObj = false;
 		if (itemType == undefined) {
-			console.log("what is the item type?");
+			console.debug("what is the item type?");
 		} else {
 			switch(itemType) {
 				case "condition":
 					var itemSelectors = $("#"+itemType+"Selectors");
 					editIndex = Number(itemSelectors.find(".editItemIndex").text());
-					console.log(itemSelectors.find(".editItemIndex").html());
+					//console.debug(itemSelectors.find(".editItemIndex").html());
 					if (!$scope.selectedItemAspect[itemType] || !$scope.selectedItemAction[itemType] || !$scope.selectedItemValue[itemType] || (itemSelectors.find(".itemSelectorsRow").find(":selected").text().indexOf("Select ")+1)) {
-						alert("please select at least one "+itemType+" aspect, action and value.");
+						alert("please provide at least one "+itemType+" aspect, action and value.");
 						// note the extra indexOf check is to find errors when the data in the $scope doesn't match one of the drop-down items.
 					
 					} else {
+						if (!isNaN($scope.selectedItemValue[itemType])) {
+							$scope.selectedItemValue[itemType] = Number($scope.selectedItemValue[itemType]);
+							console.debug("found Number - saved as a number not a string");
+						}
+							
+							
+						//itemSelectors.find(".valueInput").find("input").val();//removeClass(".d-none");
+						
+						//if($scope.selectedItemValue[itemType] == "_ascii_" || $scope.selectedItemValue[itemType] == "_num_") {
+							//var tempValue = itemSelectors.find(".valueInput").find("input").val();//removeClass(".d-none");
+							//var tempValue = prompt("Please enter a value of type: " + $scope.selectedItemValue[itemType],$scope.selectedItemValue[itemType]);
+							
+							/*
+							if (!tempValue) {
+								return;	
+							}
+							if ($scope.selectedItemValue[itemType] == "_ascii_" && tempValue != "_ascii_" && tempValue) {	
+								$scope.selectedItemValue[itemType] = tempValue;
+							} else if ($scope.selectedItemValue[itemType] == "_num_" && tempValue != "_num_" && tempValue) {
+								$scope.selectedItemValue[itemType] = Number(tempValue);
+							} else {
+								alert("Invalid Value - Please try again.")
+								return;
+							}
+							*/
+						
 						updatedItemObj = {
 							aspect: $scope.selectedItemAspect[itemType],
 							action: $scope.selectedItemAction[itemType],
@@ -158,7 +204,7 @@ app.controller('storyCtrl', function($scope) {
 					if(updatedItemObj) {
 						if(!editIndex) { // new item
 							$scope.storySelectSelected.conditions.push(updatedItemObj);
-							console.log("condition saved!");
+							console.debug("condition saved!");
 						} else { // edited item
 
 							//move controls back out of ng-repeat
@@ -174,7 +220,7 @@ app.controller('storyCtrl', function($scope) {
 							itemSelectors.find(".editItemIndex").text("");
 							itemSelectors.find(".updateItem").text("");
 							itemSelectors.find(".cancelUpdateItem").addClass("d-none");
-							console.log("condition updated!");
+							console.debug("condition updated!");
 						}
 						//resetItemSelects("condition");
 					}
@@ -196,7 +242,7 @@ app.controller('storyCtrl', function($scope) {
 					if(updatedItemObj) {
 						if(!editIndex) { // new item
 							$scope.storySelectSelected.impacts.push(updatedItemObj);
-							console.log("impact saved!");
+							console.debug("impact saved!");
 						} else { // edited item
 						
 							//move controls back out of ng-repeat
@@ -212,7 +258,7 @@ app.controller('storyCtrl', function($scope) {
 							$("#editImpactIndex").text("");
 							$("#updateImpact").text("Add Impact");
 							$("#cancelUpdateImpact").addClass("d-none");
-							console.log("impact updated!");
+							console.debug("impact updated!");
 						
 						
 
@@ -226,7 +272,7 @@ app.controller('storyCtrl', function($scope) {
 			// $digest() doesn't seem to be needed when the function is an object of the $scope.
 			//$scope.$digest();
 		}
-		//console.log($scope.storySelectSelected);		
+		//console.debug($scope.storySelectSelected);		
 	}
 	
 	$scope.saveStory = function() {
@@ -237,7 +283,7 @@ app.controller('storyCtrl', function($scope) {
 		$("#storyLocation").val(testStory.location).trigger("change");
 		$("#storyOrder").val(testStory.order).trigger("change");	
 		*/
-		//console.log($scope.storySelectSelected);
+		//console.debug($scope.storySelectSelected);
 	}
 
 	$scope.loadNextStory = function() {
@@ -246,7 +292,7 @@ app.controller('storyCtrl', function($scope) {
 		$scope.cancelItem('condition');
 		$scope.cancelItem('impact');
 		$scope.storySelectSelected = $scope.stories[nextStoryID];
-		console.log("loaded next story, ID# " + nextStoryID);
+		console.debug("loaded next story, ID# " + nextStoryID);
 	}
 	
 	$scope.loadPrevStory = function() {
@@ -255,12 +301,12 @@ app.controller('storyCtrl', function($scope) {
 		$scope.cancelItem('condition');
 		$scope.cancelItem('impact');
 		$scope.storySelectSelected = $scope.stories[prevStoryID];
-		console.log("loaded previous story, ID# " + prevStoryID);
+		console.debug("loaded previous story, ID# " + prevStoryID);
 	}
 	
 	$scope.editItem = function (itemType,inputtedIndex) {
 		if (itemType == undefined) {
-			console.log("what is the item type?");
+			console.debug("what is the item type?");
 		} else {
 			switch(itemType) {
 				case "condition":
@@ -269,12 +315,12 @@ app.controller('storyCtrl', function($scope) {
 					//cancel any previous open edits
 					$scope.cancelItem(itemType);				
 					//hide selected row and replace with the select drop downs
-					//console.log(inputtedIndex);	
+					//console.debug(inputtedIndex);	
 					var selectedItemRow = itemSelectors.find(".itemIndex"+(inputtedIndex + 1)).parent();
-					//console.log(selectedItemRow.html());
+					//console.debug(selectedItemRow.html());
 					selectedItemRow.addClass("d-none");
 					//alert("pause");
-					//console.log(itemSelectors.find(".itemSelectorsRow").html());
+					//console.debug(itemSelectors.find(".itemSelectorsRow").html());
 					itemSelectors.find(".itemSelectorsRow").insertAfter(selectedItemRow);
 					itemSelectors.find(".itemSelectorsRow").removeClass("d-none");
 					
@@ -309,12 +355,12 @@ app.controller('storyCtrl', function($scope) {
 				
 			}			
 		}			
-		//console.log($scope.storySelectSelected);		
+		//console.debug($scope.storySelectSelected);		
 	}
 
 	$scope.cancelItem = function (itemType) {
 		if (itemType == undefined) {
-			console.log("what is the item type?");
+			console.debug("what is the item type?");
 		} else {
 			var editIndex = false;
 			switch(itemType) {
@@ -327,7 +373,7 @@ app.controller('storyCtrl', function($scope) {
 					//return selector row back to top out of ng-repeat (else ng-repeat will eat it), hide it, and reshow the selected table record
 					
 					itemSelectors.find("tbody").prepend(itemSelectors.find(".itemSelectorsRow"));
-					//console.log("put itemSelectorRow out of ng-repeat so it doesn't get eaten!")
+					//console.debug("put itemSelectorRow out of ng-repeat so it doesn't get eaten!")
 					itemSelectors.find(".itemSelectorsRow").addClass("d-none");
 					var selectedConditionRow = itemSelectors.find(".itemIndex"+(editIndex)).parent();
 					selectedConditionRow.removeClass("d-none");
@@ -339,7 +385,7 @@ app.controller('storyCtrl', function($scope) {
 					$scope.selectedItemAspect[itemType] = false; 
 					$scope.selectedItemAction[itemType] = false;
 					$scope.selectedItemValue[itemType] = false;
-					console.log(capitalizedItemName + " update Cancelled!");
+					console.debug(capitalizedItemName + " update Cancelled!");
 					break;
 				case "impact":
 					editIndex = Number($("#editImpactIndex").text()	);
@@ -358,18 +404,18 @@ app.controller('storyCtrl', function($scope) {
 					$scope.selectedImpactAspect = false; 
 					$scope.selectedImpactAction = false;
 					$scope.selectedImpactValue = false;
-					console.log("Impact update Cancelled!");
+					console.debug("Impact update Cancelled!");
 					break;
 				default:
 				
 			}
 		}
-		//console.log($scope.storySelectSelected);		
+		//console.debug($scope.storySelectSelected);		
 	}
 	
 	$scope.removeItem = function (itemType,inputtedIndex) {
 		if (itemType == undefined) {
-			console.log("what is the item type?");
+			console.debug("what is the item type?");
 		} else {
 			switch(itemType) {
 				case "condition":
@@ -380,8 +426,8 @@ app.controller('storyCtrl', function($scope) {
 					//cancel any previous open edits
 					$scope.cancelItem(itemType);
 					
-					console.log(capitalizedItemName + " removed!");
-					console.log($scope.storySelectSelected[itemType + "s"][inputtedIndex]);
+					console.debug(capitalizedItemName + " removed!");
+					console.debug($scope.storySelectSelected[itemType + "s"][inputtedIndex]);
 					$scope.storySelectSelected[itemType + "s"].splice(inputtedIndex,1);
 					itemSelectors.find(".editItemIndex").text("");
 					itemSelectors.find(".updateItem").text("");
@@ -392,7 +438,7 @@ app.controller('storyCtrl', function($scope) {
 					$scope.cancelItem(itemType);
 					
 
-					console.log("Impact "+$scope.storySelectSelected.impacts[inputtedIndex]+" removed!");
+					console.debug("Impact "+$scope.storySelectSelected.impacts[inputtedIndex]+" removed!");
 					$scope.storySelectSelected.impacts.splice(inputtedIndex,1);
 					$("#editImpactIndex").text("");
 					$("#updateImpact").text("Add Impact");
@@ -402,7 +448,21 @@ app.controller('storyCtrl', function($scope) {
 				
 			}			
 		}
-		//console.log($scope.storySelectSelected);
+		//console.debug($scope.storySelectSelected);
 
-	}		
+	}
+	
+	
+	
+
 });
+
+// ************** Functions out of $scope ****************
+/*	var promptForValue = function () {
+		var tempValue = "";
+		tempValue = prompt("Please enter your Value");
+		
+		
+		
+	}	
+*/
