@@ -24,7 +24,7 @@
 	
 </p>
 
-<div class="center container-fluid" ng-app="myApp" ng-controller="storyCtrl">
+<div class="center container-fluid" ng-app="storyUIapp" id="storyUIapp" ng-controller="storyCtrl">
 
 <h1>Story UI</h1>
 <p>version 0.1</p>
@@ -39,8 +39,10 @@
 	<br/>-->
 	<br/><p>{{storySelectSelected}}</p>
 	<button class="btn btn-sm btn-success" ng-click="createNewStory()">New</button>	
-	<button class="btn btn-sm btn-success" onclick="alert(updateStoriesDB())">Save</button>
 	<button class="btn btn-sm btn-success" ng-click="createNewStory('duplicate')">Duplicate</button>	
+	<button class="btn btn-sm btn-success" onclick="alert(updateStoriesDB())">Save</button>
+	<button class="btn btn-sm btn-default" id="toggleFollowMode">Follow Mode Off</button>
+	
 
 
 	<div class="table-responsive" id="conditionSelectors" ng-init="itemKind='condition'">
