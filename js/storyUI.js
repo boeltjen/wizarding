@@ -1,5 +1,5 @@
 var testConditions = [{aspect:"places",action:"hasNot",value:"this"},{aspect:"places",action:"hasNot",value:"this"}];
-var app = angular.module('myApp', []);
+var app = angular.module('storyUIapp', []);
 
 app.directive('emitLastRepeaterElement', function() {
 	return function(scope) {
@@ -27,12 +27,7 @@ app.controller('storyCtrl', function($scope) {
 	*/
 	//intialize $scope.stories array
 	$scope.stories = storiesDBobj; //this line would be replaced with a DB call to get everything maybe for now..
-	//var testStory = storiesDBobj[6];
 	
-	//set default story to load:
-	$scope.storySelectSelected = $scope.stories[3];
-	//$scope.storySelectSelected.id = 12;
-	//$("#loadedStoryIndex").val(12);
 	
 	$scope.aspectsActionsValues = aspectsActionsValuesObj;
 
@@ -86,21 +81,22 @@ app.controller('storyCtrl', function($scope) {
 				var duplicateStory = JSON.parse(JSON.stringify($scope.storySelectSelected));
 				duplicateStory.location = tempLocationName;
 				var newStoryID = $scope.stories.push(duplicateStory);
-				$scope.cancelItem('condition');
-				$scope.cancelItem('impact');
-				$scope.storySelectSelected = $scope.stories[newStoryID-1];
+				$scope.loadStoryByID(newStoryID-1);
 				console.debug("Duplicated current story.  New story ID#" + (newStoryID-1));
 			} else {
 				blankStory.location = tempLocationName;
 				var newStoryID = $scope.stories.push(blankStory);
-				$scope.cancelItem('condition');
-				$scope.cancelItem('impact');
-				$scope.storySelectSelected = $scope.stories[newStoryID-1];
+				$scope.loadStoryByID(newStoryID-1);
 				console.debug("created a blank story, ID#" + (newStoryID-1));	
 			}
 		}
 	}
 	
+	$scope.loadStoryByID = function(storyIDNum) {
+		$scope.cancelItem('condition');
+		$scope.cancelItem('impact');
+		$scope.storySelectSelected = $scope.stories[storyIDNum];
+	}
 	
 	$scope.showDB = function() {
 		console.debug(storiesDBobj);
@@ -277,7 +273,7 @@ app.controller('storyCtrl', function($scope) {
 	
 	$scope.saveStory = function() {
 		//$scope.stories[$("#loadedStoryIndex").val()] = $scope.storySelectSelected;
-
+		console.log("received");
 		/*
 		$("#storyBody").val(testStory.story).trigger("change");
 		$("#storyLocation").val(testStory.location).trigger("change");
@@ -289,18 +285,14 @@ app.controller('storyCtrl', function($scope) {
 	$scope.loadNextStory = function() {
 		let currentStoryID = Number($("#storySelect").find(":selected").text());
 		let nextStoryID = (currentStoryID + 1 >= $scope.stories.length) ? currentStoryID : currentStoryID+1;
-		$scope.cancelItem('condition');
-		$scope.cancelItem('impact');
-		$scope.storySelectSelected = $scope.stories[nextStoryID];
+		$scope.loadStoryByID(nextStoryID);
 		console.debug("loaded next story, ID# " + nextStoryID);
 	}
 	
 	$scope.loadPrevStory = function() {
 		let currentStoryID = Number($("#storySelect").find(":selected").text());
 		let prevStoryID = (currentStoryID > 0 ) ? currentStoryID - 1 : currentStoryID;
-		$scope.cancelItem('condition');
-		$scope.cancelItem('impact');
-		$scope.storySelectSelected = $scope.stories[prevStoryID];
+		$scope.loadStoryByID(prevStoryID);
 		console.debug("loaded previous story, ID# " + prevStoryID);
 	}
 	
@@ -366,6 +358,8 @@ app.controller('storyCtrl', function($scope) {
 			switch(itemType) {
 				case "condition":
 					var itemSelectors = $("#"+itemType+"Selectors");
+					//console.log(itemSelectors.html());
+					//alert("poause");
 					var capitalizedItemName = itemType.charAt(0).toUpperCase() + itemType.slice(1);
 
 					editIndex = Number(itemSelectors.find(".editItemIndex").text());
@@ -453,7 +447,9 @@ app.controller('storyCtrl', function($scope) {
 	}
 	
 	
-	
+	//set default story to load:
+	//$scope.loadStoryByID(3);
+	$scope.storySelectSelected = $scope.stories[3];
 
 });
 

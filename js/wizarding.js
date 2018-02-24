@@ -27,6 +27,21 @@ var placesDB = [];
 var teamsDB = [];
 // structure of teamsDB = [[teamNameID,{members: [wizardIDs], teamAdmin: "wizardID", teamPassword: "password"}]]
 
+// intialize variable for followMode in Story UI
+var followModeOn = false;
+
+$("#toggleFollowMode").click(function() {
+	if(followModeOn) {
+		$("#toggleFollowMode").text("Follow Mode Off");
+		$("#toggleFollowMode").removeClass("btn-success").addClass("btn-default");
+		followModeOn = false;
+	} else {
+		$("#toggleFollowMode").text("Follow Mode On");
+		$("#toggleFollowMode").removeClass("btn-default").addClass("btn-success");
+		followModeOn = true;
+	}
+});
+
 var placesDB = [];
 for (let i =0; i<placesDBobj.length;i++){
 	let tempPlaceDetailsObj = JSON.stringify(placesDBobj[i][4]);
@@ -38,31 +53,31 @@ for (let i =0; i<placesDBobj.length;i++){
 //testing utility showStoriesByPlace looking up the storiesDBobj
 var showStoriesByPlace = function(tempPlaceName) {
 	if(tempPlaceName == undefined) {
-		console.log(storiesDBobj);
+		console.debug(storiesDBobj);
 		return;
 	}
 	if (typeof tempPlaceName == 'number') {
-		console.log("StoryID #",tempPlaceName);
+		console.debug("StoryID #",tempPlaceName);
 		storiesDBobj.forEach(function(storyElement,index){
 			if(index == tempPlaceName) {
-				console.log(storyElement.story);
-				console.log('Order:',storyElement.order);
-				console.log('Conditions:');
+				console.debug(storyElement.story);
+				console.debug('Order:',storyElement.order);
+				console.debug('Conditions:');
 				storyElement.conditions.forEach(function(conditionElement){
-					console.log('aspect:',conditionElement.aspect,'action:',conditionElement.action,'value:',conditionElement.value);
+					console.debug('aspect:',conditionElement.aspect,'action:',conditionElement.action,'value:',conditionElement.value);
 				});
-				console.log('Impacts:');
+				console.debug('Impacts:');
 				storyElement.impacts.forEach(function(conditionElement){
-					console.log('aspect:',conditionElement.aspect,'action:',conditionElement.action,'value:',conditionElement.value);
+					console.debug('aspect:',conditionElement.aspect,'action:',conditionElement.action,'value:',conditionElement.value);
 				});			
 			}
 		});
 	} else if (typeof tempPlaceName == 'string') {
-		//console.log(tempPlaceName," stories (if any):");
+		//console.debug(tempPlaceName," stories (if any):");
 		storiesDBobj.forEach(function(storyElement,index){
 			if(storyElement.location == tempPlaceName) {
-				console.log(index,storyElement.order,storyElement.story);
-				console.log(storyElement.conditions.length);
+				console.debug(index,storyElement.order,storyElement.story);
+				console.debug(storyElement.conditions.length);
 			}
 		});	
 	}	
@@ -359,6 +374,7 @@ var geo = function(wizard) {
 		}
 		return thisWizard.unread();
 	};
+	
 	this.look = function() {
 		thisWizard.log("@" + thisWizard.nameID + " looks around:\n\n");
 		map.reactTo(thisWizard);
@@ -440,7 +456,7 @@ wizard.prototype.unread = function() {
 			}
 		}
 	}
-	//console.log(unreadStoryMessages);
+	//console.debug(unreadStoryMessages);
 	var returnString = '';
 	for (let i=0; i < unreadStoryMessages.length; i++) {
 		returnString += unreadStoryMessages[i];
@@ -511,14 +527,14 @@ wizard.prototype.loadFromDB = function() {
 				health: tempWizardDetailsObj.health,
 				money: tempWizardDetailsObj.money
 			};
-				//console.log(this.hidden.places.value);
+				//console.debug(this.hidden.places.value);
 			this.setParams(tempParams);
-				//console.log(this.hidden.places.value);
+				//console.debug(this.hidden.places.value);
 
 			return true;
 		}
 	}
-	//console.log("No wizard found in DB.  Try saving first.");
+	//console.debug("No wizard found in DB.  Try saving first.");
 	return false;
 }
 
@@ -583,25 +599,25 @@ var team = function() {
 
 var team.prototype.submit = function(submittedTeamName,submittedTeamPassword) {
 	if( (submittedTeamName == undefined) || (submittedTeamPassword == undefined) ) {
-		console.log("Invalid team name and/or password.  Please try again.");
+		console.debug("Invalid team name and/or password.  Please try again.");
 		return;
 	}
 	if (teamDBobj.hasOwnProperty(submittedTeamName)) {
 		if (submittedTeamName.teamPassword != undefined) {
 			if (submittedTeamName.teamPassword == submittedTeamPassword) {
 				submitTeamName.members.push('boeltjen');
-				console.log("Welcome to team submittedTeamName!  These are the other members of your team:");
+				console.debug("Welcome to team submittedTeamName!  These are the other members of your team:");
 				for (var i=0; i < submittedTeamName.members.length; i++) {
-					console.log(submittedTeamName.members[i]);
+					console.debug(submittedTeamName.members[i]);
 				}
-				console.log("This team name already exists, but the password is wrong.  To join, please recheck the team name and password that you entered.  Or to create your own team, please try another name");
+				console.debug("This team name already exists, but the password is wrong.  To join, please recheck the team name and password that you entered.  Or to create your own team, please try another name");
 			}
-			console.log("error - team password undefined...")
+			console.debug("error - team password undefined...")
 		}
 	} else {
-		console.log("Thanks for starting a team!");
-		console.log("As the leader of team '"+submittedTeamName+"', you're job is to invite others to join.");
-		console.log("Tell them to use your team name: '"+submittedTeamName+"', and your password: '"+submittedTeamPassword+"'");
+		console.debug("Thanks for starting a team!");
+		console.debug("As the leader of team '"+submittedTeamName+"', you're job is to invite others to join.");
+		console.debug("Tell them to use your team name: '"+submittedTeamName+"', and your password: '"+submittedTeamPassword+"'");
 	}
 	return;
 };
@@ -689,7 +705,7 @@ var wiz = function(wizardName) {
 	}
 	//tempWizard.geo.look();
 	//else {
-		//console.log("Welcome Back '"+ wizardName +"'!  We misseed you!!  Go forth and multiply!\n\n" + tempWizard.status()+"\n\n");
+		//console.debug("Welcome Back '"+ wizardName +"'!  We misseed you!!  Go forth and multiply!\n\n" + tempWizard.status()+"\n\n");
 	//}
 	//var newIndex = activeWizards.push(tempWizard);
 	//return activeWizards[newIndex-1];
@@ -707,21 +723,21 @@ var wiz = function(wizardName) {
 //var stacy = new wizard(startingParams);
 //stacy.start(startingParams);
 //stacy.name('stacy');
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
 //boeltjen.money.add(200);
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
 //boeltjen.health.add(200);
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
 //boeltjen.bag.add("fork");
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
 //boeltjen.geo.moveTo(3,2);
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
 
-//console.log(boeltjen.bag.hasNot('fork'));
+//console.debug(boeltjen.bag.hasNot('fork'));
 
 //boeltjen.bag.use('useless spellbook');
 //boeltjen.bag.returnTo('useless spellbook');
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
 
 
 
@@ -746,19 +762,19 @@ var Quad = function(params){
 //var q0001 = new Quad(quad0001params);
 //var q00n01 = new Quad(quad00n01params);
 //var q0100 = new Quad(quad0100params);
-//console.log(q0000);
+//console.debug(q0000);
 
-//console.log(q0000.reactTo(boeltjen));
+//console.debug(q0000.reactTo(boeltjen));
 
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
 //boeltjen.bag.use('useless spellbook');
-//console.log(boeltjen.status());
-//console.log(q0000.reactTo(boeltjen));
-//console.log(boeltjen.status());
+//console.debug(boeltjen.status());
+//console.debug(q0000.reactTo(boeltjen));
+//console.debug(boeltjen.status());
 
 //boeltjen.bag.use('potion');
-//console.log(q0000.reactTo(boeltjen));
-//console.log(boeltjen.status());
+//console.debug(q0000.reactTo(boeltjen));
+//console.debug(boeltjen.status());
 
 
 var map = {
@@ -843,7 +859,7 @@ var map = {
 
 
 map.reactTo = function(wizard) {
-	console.log(this);
+	console.debug(this);
 	if(wizard == undefined) return false;
 	var wizardTeleported = true;
 	while(wizardTeleported) {
@@ -863,7 +879,8 @@ map.reactTo = function(wizard) {
 			//wizardOnMap = true;
 		}
 		if(wizardOnMap) {
-			console.log(quadWizardIsIn);
+			console.debug(quadWizardIsIn);
+			console.log("wizard is in : '" + quadWizardIsIn.placeName + "'");
 			var passingStoryWithMostConditions = {'storyK':false,'numConditions':false,'conditionsAllTrue':false,'storyOrder':false};
 			for (var k=0;k<quadWizardIsIn.stories.length;k++){
 				var evaluatedConditions = true;
@@ -879,7 +896,7 @@ map.reactTo = function(wizard) {
 									evaluatedConditions = (evaluatedConditions && wizard.bag.hasNot(quadWizardIsIn.stories[k].conditions[i].value));
 									break;
 								case 'using':
-									console.log('k:',k,wizard.bag.isUsing(quadWizardIsIn.stories[k].conditions[i].value));
+									console.debug('k:',k,wizard.bag.isUsing(quadWizardIsIn.stories[k].conditions[i].value));
 									if(wizard.bag.isUsing(quadWizardIsIn.stories[k].conditions[i].value)) {
 										storiesIDsWhereUsingDidSomething[k] = true;
 									};
@@ -975,7 +992,7 @@ map.reactTo = function(wizard) {
 						passingStoryWithMostConditions = {'storyK':k,'numConditions':numConditionsInStory,'conditionsAllTrue':true, 'storyOrder':quadWizardIsIn.stories[k].order};
 					}
 				}
-				console.log('passingStoryWithMostConditions',passingStoryWithMostConditions);
+				console.debug('passingStoryWithMostConditions',passingStoryWithMostConditions);
 				
 				/*
 				if(evaluatedConditions) {
@@ -985,7 +1002,7 @@ map.reactTo = function(wizard) {
 						passingStoryWithMostConditions = {'storyK':k,'numConditions':numConditionsInStory,'conditionsAllTrue':true};
 					}
 				}
-				console.log('passingStoryWithMostConditions',passingStoryWithMostConditions);
+				console.debug('passingStoryWithMostConditions',passingStoryWithMostConditions);
 				*/
 
 			}
@@ -1065,23 +1082,28 @@ map.reactTo = function(wizard) {
 				//wizard.hidden.stories.add(quadWizardIsIn.stories[k].storyID);
 				//wizard.saveToDB();
 				//wizard.log(quadWizardIsIn.stories[k].story);
-				//console.log(wizardTeleported);
+				//console.debug(wizardTeleported);
 				//return;// wizard.unread();
 				
 			}
 			
 			if(savePlace) wizard.hidden.places.add(quadWizardIsIn.placeID);
 
-			console.log(storiesIDsWhereUsingDidSomething,k);
+			console.debug(storiesIDsWhereUsingDidSomething,k);
 			if(!storiesIDsWhereUsingDidSomething.hasOwnProperty(k) && wizard.bag.using.length) {
 				wizard.log('but nothing happens...\n\n');
 			}
-			console.log('k:',k,passingStoryWithMostConditions.conditionsAllTrue); 
+			console.debug('k:',k,passingStoryWithMostConditions.conditionsAllTrue); 
 			
 			if(passingStoryWithMostConditions.conditionsAllTrue) {
 				wizard.hidden.stories.add(quadWizardIsIn.stories[k].storyID);
-				console.log(quadWizardIsIn.stories[k].story);
+				console.debug(quadWizardIsIn.stories[k].story);
 				wizard.log(quadWizardIsIn.stories[k].story);
+				// if user has activated StoryID "followMode", then switch storyID's story to the correct StoryID
+				if(followModeOn) {
+					angular.element("#storyUIapp").scope().loadStoryByID(quadWizardIsIn.stories[k].storyID);
+					angular.element("#storyUIapp").scope().$apply();
+				}
 			} else {
 				var noStoriesMessage = "Nothing Here.  Boring...";
 				if(quadWizardIsIn.placeDescription != undefined) {
@@ -1107,7 +1129,7 @@ map.reactTo = function(wizard) {
 		{
 		
 		}
-		//console.log(wizardTeleported);
+		//console.debug(wizardTeleported);
 
 	}
 };
@@ -1115,18 +1137,18 @@ map.reactTo = function(wizard) {
 //map.quads.push(q0001);
 //map.quads.push(q00n01);
 //map.quads.push(q0100);
-//console.log(boeltjen.status());
-//console.log(map);
-//console.log(map.quadrant(boeltjen.geo));
+//console.debug(boeltjen.status());
+//console.debug(map);
+//console.debug(map.quadrant(boeltjen.geo));
 
-//console.log(map.reactTo(boeltjen));
+//console.debug(map.reactTo(boeltjen));
 /*
-console.log(map.reactTo(boeltjen));
+console.debug(map.reactTo(boeltjen));
 boeltjen.geo.moveTo(0,1);
 
-console.log(map.reactTo(boeltjen));
-console.log(boeltjen.status());
+console.debug(map.reactTo(boeltjen));
+console.debug(boeltjen.status());
 var sdewing = new wizard('stacy',startingParams);
-console.log(sdewing.status());
+console.debug(sdewing.status());
 
 */
