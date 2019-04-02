@@ -1,7 +1,7 @@
 var testConditions = [{aspect:"places",action:"hasNot",value:"this"},{aspect:"places",action:"hasNot",value:"this"}];
-var app = angular.module('storyUIapp', []);
+var storyUIapp = angular.module('storyUIapp', []);
 
-app.directive('emitLastRepeaterElement', function() {
+storyUIapp.directive('emitLastRepeaterElement', function() {
 	return function(scope) {
 		if (scope.$last){
 			scope.$emit('LastRepeaterElement');
@@ -10,7 +10,8 @@ app.directive('emitLastRepeaterElement', function() {
 });
 
 
-app.controller('storyCtrl', function($scope) {
+
+storyUIapp.controller('storyUICtrl', function($scope) {
 	
 	/*
 	structure of $scope = {
@@ -25,9 +26,16 @@ app.controller('storyCtrl', function($scope) {
 		]
 	}
 	*/
+
+
 	//intialize $scope.stories array
-	$scope.stories = storiesDBobj; //this line would be replaced with a DB call to get everything maybe for now..
+
+
+	$scope.stories = getStoriesByLocation(); //this line would be replaced with a DB call to get everything maybe for now..
+		
+	//$scope.stories = storiesDB; //this line would be replaced with a DB call to get everything maybe for now..
 	
+
 	
 	$scope.aspectsActionsValues = aspectsActionsValuesObj;
 
@@ -93,10 +101,26 @@ app.controller('storyCtrl', function($scope) {
 	}
 	
 	$scope.loadStoryByID = function(storyIDNum) {
-		$scope.cancelItem('condition');
-		$scope.cancelItem('impact');
-		$scope.storySelectSelected = $scope.stories[storyIDNum];
+		//look for the storyIDNum
+		$scope.stories.forEach(function(storyInStories) {
+			if(storyInStories.storyID == storyIDNum) {
+				$scope.cancelItem('condition');
+				$scope.cancelItem('impact');
+				console.log(storyIDNum);
+				$scope.storySelectSelected = storyInStories;
+				return;
+			}
+		});
+		//if not found, do nothing and return false
+		return false;
 	}
+
+	$scope.showDB = function() {
+		console.debug(storiesDBobj);
+		
+		
+	}
+
 	
 	$scope.showDB = function() {
 		console.debug(storiesDBobj);
@@ -104,9 +128,9 @@ app.controller('storyCtrl', function($scope) {
 		
 	}
 
-	$scope.updateStoriesLocations = function(obj) {
+	$scope.returnObjLocation = function(obj) {
 		//console.debug(obj);
-		return (obj.location);
+		return (obj);
 		/*$scope.storiesLocations = {};
 		$scope.stories.forEach( function(storyElement) {
 			$scope.storiesLocations[storyElement.location] = true;			
@@ -282,18 +306,33 @@ app.controller('storyCtrl', function($scope) {
 		//console.debug($scope.storySelectSelected);
 	}
 
+	
 	$scope.loadNextStory = function() {
-		let currentStoryID = Number($("#storySelect").find(":selected").text());
-		let nextStoryID = (currentStoryID + 1 >= $scope.stories.length) ? currentStoryID : currentStoryID+1;
-		$scope.loadStoryByID(nextStoryID);
-		console.debug("loaded next story, ID# " + nextStoryID);
+		let currentStoryID = $scope.storySelectSelected.storyID;
+		//let nextStoryID = (currentStoryID + 1 >= $scope.stories.length) ? currentStoryID : currentStoryID+1;
+		let nextStoryID = Number($("#storySelect option[value='"+ currentStoryID +"']").next().val());
+		if(!isNaN(nextStoryID)) {
+			$scope.loadStoryByID(nextStoryID);
+			console.debug("loaded next story, ID# " + nextStoryID);	
+		} else {
+			console.debug("last story in group");
+			alert("last story in this location");
+		}
+		
 	}
 	
 	$scope.loadPrevStory = function() {
-		let currentStoryID = Number($("#storySelect").find(":selected").text());
-		let prevStoryID = (currentStoryID > 0 ) ? currentStoryID - 1 : currentStoryID;
-		$scope.loadStoryByID(prevStoryID);
+		let currentStoryID = $scope.storySelectSelected.storyID;
+		//let prevStoryID = (currentStoryID > 0 ) ? currentStoryID - 1 : currentStoryID;
+		let prevStoryID = Number($("#storySelect option[value='"+ currentStoryID +"']").prev().val());
+		if(!isNaN(prevStoryID)) {
+			$scope.loadStoryByID(prevStoryID);
 		console.debug("loaded previous story, ID# " + prevStoryID);
+		} else {
+			console.debug("first story in group");
+			alert("first story in this location");
+		}
+		
 	}
 	
 	$scope.editItem = function (itemType,inputtedIndex) {
