@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 	<title>Wizarding at Toronto City Hall</title>
 
 	<script src="js/jquery.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/angular.min.js"></script>
+	<!--<script src="js/angular.min.js"></script>-->
+	<script src="js/angular.min.1.7.7.js"></script>
+	<script src="js/angular-sanitize.1.7.7.js"></script>
+	
 
     <link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
@@ -13,6 +17,9 @@
 </head>
 
 <body>
+<button class="btn btn-xs btn-default" id="toggleStoryUI" onclick="$('#storyUIapp').toggle()">toggle story UI</button>	
+
+
 
 <!--
 <h1>Wizarding at Toronto City Hall</h1>
@@ -24,7 +31,7 @@
 	
 </p>
 
-<div class="center container-fluid" ng-app="storyUIapp" id="storyUIapp" ng-controller="storyCtrl">
+<div class="center container-fluid d-none" ng-app="storyUIapp" id="storyUIapp" ng-controller="storyUICtrl" style="display:none;"
 
 <h1>Story UI</h1>
 <p>version 0.1</p>
@@ -32,16 +39,17 @@
 	
 
 	<button class="btn btn-sm btn-success" id="loadPrevStoryButton" ng-click="loadPrevStory()"><< Prev</button>
-	<select id="storySelect" ng-model="storySelectSelected" ng-options="ind group by updateStoriesLocations(story) for (ind, story) in stories"></select>	
+	<select id="storySelect" ng-model="storySelectSelected" ng-options="(story.story.substring(0, 50) + '...') group by story.location for (ind, story) in stories track by story.storyID"></select>	
 	<button class="btn btn-sm btn-success" id="loadNextStoryButton" ng-click="loadNextStory()">Next >></button>	
 	<!--<br/> 
 	<button class="btn btn-sm btn-success" id="saveStoryButton" ng-click="saveStory()">Save Story</button>
 	<br/>-->
-	<br/><p>{{storySelectSelected}}</p>
+	<br/>
+	<!--<p>{{storySelectSelected}}</p>-->
 	<button class="btn btn-sm btn-success" ng-click="createNewStory()">New</button>	
 	<button class="btn btn-sm btn-success" ng-click="createNewStory('duplicate')">Duplicate</button>	
 	<button class="btn btn-sm btn-success" onclick="alert(updateStoriesDB())">Save</button>
-	<button class="btn btn-sm btn-default" id="toggleFollowMode">Follow Mode Off</button>
+	<button class="btn btn-sm btn-success" id="toggleFollowMode">Follow Mode On</button>
 	
 
 
@@ -177,17 +185,240 @@
 			</tbody>
 		</table>
 	</div>
-	
+		
 
 
 </div>
+
+
 	
+<div class="wrapper" id="playUIapp" ng-app="playUIapp" ng-controller="playUICtrl">
 
-<script src="js/jsonDB.js"></script>
-<script src="js/storyUI.js"></script>
-<script src="js/wizarding.js"></script>
+	
+    <!-- Story UI **************************************************************************************** -->
+	
+	<div class="outer-monitor"><div class="inner-monitor">
+		<!--<label for="playHistory">Play History:</label><br />-->
+		<!--<div id="playHistory" class="size" style="overflow: auto; border: solid 1px; height:250px;"></div>-->
 
+		<h2></h2>
+					<!--<p ng-bind-html="hello"></p>-->
+			<div id="wizardManagementConsole">
+				<div ng-if="(wizardName=='')">
+					<h3>Create New Wizard</h3>
+						<button class="btn btn-success" id="newWizardButton" ng-click="updateWizardName()">Create</button>
+				</div>
+				<div ng-if="false">
+					<h3>Switch Wizard</h3>
+						<span ng-repeat="wiz in wizards"><a ng-click="updateWizardName(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}</a><br /></span>
+				</div>
+			</div>
+			<div id="playUiConsole" ng-if="(wizardName!='')">
+				<h3>{{whatHappenedTitle}}</h3>
+			
+				<!--<h3>What Happened</h3>-->
+					<blockquote ng-bind-html="playScreenBody"></blockquote>
+				
+				<h3>What Can You Do</h3>
+					<h4>Try Using Something</h4>
+						<ul>
+							<li ng-repeat="x in wizards[wizardName].bag.items | orderBy"><a href="" ng-click="playUI('use',x)" >Try using {{x}}</a></li>
+						</ul>
+						
+
+
+					<h4>Try Going Somewhere</h4>
+						<ul>
+							<li ng-repeat="(key,value) in wizards[wizardName].hidden.knownPlaces.value" ng-if="value"><a href="" ng-click="playUI(key)">Go to {{key}}</a></li>
+						</ul>
+
+					<h4>Text Another Wizard</h4>
+							
+					<h3>What's Your Status</h3>
+						<ul>
+							<li>{{"User: "+wizardName}}</li>
+							<li>Health: {{wizards[wizardName].health.value}}</li>
+							<li>Money: {{wizards[wizardName].money.value}}</li>
+						</ul>
+				
+		</div>
+		<br />
+		<!--<label for="playScreen" >Play Messages:</label><br />-->
+		<!--<div id="playScreen" class="size" style="overflow: auto; solid;"></div>-->
+		
+		
+	</div></div>
+
+</div>
+
+<script>
+
+
+$(document).ready(function () {
+
+
+
+    /*$('.toggleSidebar').on('click', function () {
+        if(!$('#sidebar').hasClass('active')) {
+			$('#sidebar').toggleClass('active');
+		}
+		//$('#newWizardButton').focus();		
+    });*/
+
+
+	
+});
+
+//Head Icon:
+//<div class="rn-1oszu61 rn-1mlj4tw rn-1nwgakb rn-1yso6h0 rn-5uj97p rn-16qyjs6 rn-1efd50x rn-14skgim rn-rull8r rn-mm0ijv rn-13yce4e rn-fnigne rn-ndvcnb rn-gxnn5r rn-1p0dtai rn-deolkf rn-1adg3ll rn-eqz5dr rn-1d2f490 rn-1mnahxq rn-61z16t rn-p1pxzi rn-11wrixw rn-ifefl9 rn-bcqeeo rn-1272l3b rn-wk8lta rn-9aemit rn-1mdbw0j rn-gy4na3 rn-u8s1d rn-zchlnj rn-ipm5af rn-35lyl6 rn-1i6wzkk rn-184en5c"></div>
+
+
+
+var playUIapp = angular.module("playUIapp", ['ngSanitize']);
+playUIapp.controller("playUICtrl", function($scope) {
+
+//var playUIapp = angular.module("playUIapp", ['ngSanitize']);
+//playUIapp.controller("playUICtrl", ['$http', '$templateCache', '$sce', function($scope) {
+    //$scope.items = wizards.boeltjen.bag.items;
+	$scope.wizardName = "";
+	$scope.wizards = {}
+	$scope.whatHappenedTitle = "";
+	/*
+		'boeltjen': {
+			bag: {
+				items: [
+					'potion',
+					'pointy hat'
+				
+				]
+			}
+		}
+	};*/
+	var wizardNamePrompt = "What do they call you fine wizard?";
+	var devWizardHistory = {};
+	
+	$scope.toggleSidebar = function (){
+		
+		//$('#sidebar').toggleClass('collapsed');
+		//check if sidebar is already open.  If so, update wizard name, else open sidebar
+		//console.log($('#sidebar').hasClass('collapsed'));
+		/*if($('#sidebar').toggleClass('collapsed')) {
+			$('#sidebar').removeClass('collapsed');
+		} else {
+			$scope.updateWizardName();
+		
+		}*/
+			//$('#newWizardButton').focus();		
+		
+	
+	
+	
+	}
+	
+	$scope.updateWizardName = function(nameToSet) {
+		
+		var tempWizardName = nameToSet ? nameToSet : "";
+		while(tempWizardName == "") {
+			tempWizardName = prompt(wizardNamePrompt,$scope.wizardName);
+			//$("#wizardName").val(tempWizardName)
+		} 
+		if(tempWizardName) {
+			//save current player's history and their play screen
+			devWizardHistory[$scope.wizardName] = { 
+													'history': $("#playHistory").html(),
+													'screen': $("#playScreen").html(),
+												};
+			//console.log(devWizardHistory[$scope.wizardName]);
+			//change the wizard's name
+			$scope.wizardName = tempWizardName;
+			
+			
+			if(devWizardHistory[$scope.wizardName]) {
+				//load the new wizard's name (if available)
+				$("#playHistory").html(devWizardHistory[$scope.wizardName].history);
+				$("#playScreen").html(devWizardHistory[$scope.wizardName].screen);			
+			} else {
+				//clear main and history screens
+				$("#playHistory").html("");
+				$("#playScreen").html("");				
+			}
+			/*
+			if (nameToSet == undefined) {
+				//if this is a new wizard then perform a look.
+				$scope.playUI('look');
+			}
+			*/
+			
+			//always do a look when changing the name / changing the user
+			$scope.playUI('look');
+
+							
+		} else {
+			$('#sidebar').addClass('collapsed');
+			window.scrollTo(0,0);
+			return false;
+		}
+		//$('#sidebar').addClass('collapsed');
+		window.scrollTo(0,0);
+	}
+	
+	
+	$scope.playUI = function (action,useItemName) {
+		//console.log($scope.wizardName);
+		//var actingWizardName = $("#wizardName").val(); 	
+		
+		if(!$scope.wizardName) {
+			$scope.updateWizardName(prompt(wizardNamePrompt,$scope.wizardName));
+		}
+		if($scope.wizardName) {
+			var responseMessage = "";
+			var actionResponseObj = {}; 
+			var nowDate = new Date();
+			
+			switch (action) {
+				case 'look':
+					actionResponseObj.full = wiz($scope.wizardName).geo.look();
+					break;
+				case 'use':
+					actionResponseObj.full = wiz($scope.wizardName).bag.use(useItemName);
+					break;				
+				default:
+					actionResponseObj.full = wiz($scope.wizardName).geo.go(action);
+					break;				
+			}
+			actionResponseObj.title = actionResponseObj.full.slice(0,actionResponseObj.full.indexOf("\n"));
+			actionResponseObj.body = actionResponseObj.full.slice(actionResponseObj.full.indexOf("\n")+2);
+			$scope.whatHappenedTitle = actionResponseObj.title;
+			$scope.playScreenBody = actionResponseObj.body.replace(/\n/g, "<br />");
+			//$("#whatHappenedTitle").text(actionResponseObj.title);
+			//alert(actionResponseObj.title);
+			responseMessage = nowDate.toLocaleString() + " - " + actionResponseObj.full.replace(/\n/g, "<br />");
+			//$("#playScreen").html(actionResponseObj.body);
+			/*
+			if(actionResponseObj.body) {
+				//only add to the history if the screen isn't blank.
+				$("#playHistory").append("<hr style='height:1px;border:none;color:#333;background-color:#333;' />" + responseMessage + "<br>" );
+			}
+			$("#playHistory").scrollTop(500000);
+			*/
+		}
+		//scroll to the top and close sidebar if used any sidebar functions
+		//$('#sidebar').addClass('collapsed');
+		$(".inner-monitor").scrollTop(0);
+
+		
+	}
+	
+	
+});
+
+angular.bootstrap(document.getElementById("playUIapp"), ['playUIapp']);
 
 </script>
-</body>
+
+
+<script src="js/jsonDB.js"></script>
+<script src="js/wizarding.js"></script>
+<script src="js/storyUI.js"></script>
+
 </html>

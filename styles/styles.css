@@ -1,8 +1,9 @@
+/*
 h1, h2, p, label {
  text-align: center;
  font-family: 'Fauna One', serif;
  font-size: 14px;
-}
+}*/
 
 body {
 	
@@ -19,10 +20,37 @@ body {
 }
 
 .float-center {
-    text-align: center;
+    text-align: left;
     float: center;
 }
 
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}        
+
+#sidebar {
+    min-width: 150px;
+    max-width: 150px;
+    min-height: 750vh;
+    transition: all 0.3s;
+	position:fixed;
+	top: 0px;
+	text-color: #FFFFFF;
+	z-index: 2;
+}
+
+#sidebar.collapsed {
+    margin-left: -110px;
+}
+/*
+.left-sidebar {
+	background: #7386D5;
+    color: #fff;
+    min-height: 750vh;
+	width: 110px;
+}
+*/
 .center {
     text-align: center;
     margin: 0 20px;
@@ -31,7 +59,20 @@ body {
 .size {
 	width: 600px;
     margin: 0 auto 30px auto;
+	border: solid 1px;
 }
+
+.size-sm {
+	width: 300px;
+    margin: 0 auto 30px auto;
+}
+
+.size-lg {
+	width: 900px;
+    margin: 0 auto 30px auto;
+}
+
+
 form {
 	float: left;
 	display: inline-block;	
@@ -43,23 +84,6 @@ form {
 	height: 100px;
 }
 
-h1 {font-family: 'Playfair Display', serif; font-size: 30px; text-transform: uppercase; margin: 50px 0 3px 0;}
-h3 {letter-spacing: 1px; margin: 3px 0;}
-h3:nth-of-type(2) {margin-top: 60px;}
-
-::-webkit-scrollbar {
-    width: 12px;
-}
- 
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px #00ff00; 
-    border-radius: 10px;
-}
- 
-::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px #00ff00; 
-}
 
 .gold {
 	color: #fcc726;
@@ -96,19 +120,23 @@ h3:nth-of-type(2) {margin-top: 60px;}
 	padding: 0 0 0 5px;	
 }
 
-#Monitor {
-	width: 500px;
-	height: 300px;
+.outer-monitor {
+	width: 70vw;
+	height: 90vh;
+	padding: 20px;
+	margin: 5vh auto 5vh auto;
+	border: solid thin;
+	border-radius: 20px 20px 20px 20px;
+}
+
+.inner-monitor {
+	height: 100%;
 	overflow: auto;
-	color: #00ff00;
-	margin: 30px auto 0 auto;
-	padding: 10px 20px;
-	border-radius: 20px 20px 0 0;
-	font-family: 'Inconsolata', monospace;
 	text-align: left;
 }
 
-#MonitorBottom {
+
+.monitorBottom {
 	width: 500px;
 	height: 50px;
 	color: #00ff00;
