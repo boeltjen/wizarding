@@ -202,23 +202,14 @@
 		<!--<div id="playHistory" class="size" style="overflow: auto; border: solid 1px; height:250px;"></div>-->
 
 		<h2></h2>
-					<!--<p ng-bind-html="hello"></p>-->
-			<div id="wizardManagementConsole">
-				<div ng-if="(wizardName=='')">
-					<h3>Create New Wizard</h3>
-						<button class="btn btn-success" id="newWizardButton" ng-click="updateWizardName()">Create</button>
-				</div>
-				<div ng-if="false">
-					<h3>Switch Wizard</h3>
-						<span ng-repeat="wiz in wizards"><a ng-click="updateWizardName(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}</a><br /></span>
-				</div>
-			</div>
+
 			<div id="playUiConsole" ng-if="(wizardName!='')">
 				<h3>{{whatHappenedTitle}}</h3>
-			
+				<span aria-live="polite">
+
 				<!--<h3>What Happened</h3>-->
-					<blockquote ng-bind-html="playScreenBody"></blockquote>
-				
+					<blockquote aria-live="polite" ng-bind-html="playScreenBody"></blockquote>
+				</span>
 				<h3>What Can You Do</h3>
 					<h4>Try Using Something</h4>
 						<ul>
@@ -233,6 +224,9 @@
 						</ul>
 
 					<h4>Text Another Wizard</h4>
+					<span ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)">
+						<button class="btn btn-default btn-xs" ng-click="chatWizard(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}</button>
+					</span>
 							
 					<h3>What's Your Status</h3>
 						<ul>
@@ -240,8 +234,18 @@
 							<li>Health: {{wizards[wizardName].health.value}}</li>
 							<li>Money: {{wizards[wizardName].money.value}}</li>
 						</ul>
+			</div>
+						
+			<div id="wizardManagementConsole">
+				<h3>Manage Wizards</h3>
+					<button class="btn btn-success" id="newWizardButton" ng-click="updateWizardName()"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}Create</button>&nbsp;
+					<span ng-if="numActiveWizards()>1">		
+						<span ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)">
+						<button class="btn btn-info" ng-click="updateWizardName(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;Switch to {{wiz.nameID}}</button>&nbsp;</span>
+					</span>
+			</div>						
 				
-		</div>
+		
 		<br />
 		<!--<label for="playScreen" >Play Messages:</label><br />-->
 		<!--<div id="playScreen" class="size" style="overflow: auto; solid;"></div>-->
@@ -282,6 +286,11 @@ playUIapp.controller("playUICtrl", function($scope) {
     //$scope.items = wizards.boeltjen.bag.items;
 	$scope.wizardName = "";
 	$scope.wizards = {}
+	$scope.numActiveWizards = function() {
+		let wizCount = 0;
+		for (wizes in $scope.wizards) {wizCount++};
+		return wizCount;
+	}
 	$scope.whatHappenedTitle = "";
 	/*
 		'boeltjen': {
@@ -314,6 +323,19 @@ playUIapp.controller("playUICtrl", function($scope) {
 	
 	
 	}
+	$scope.chatWizard = function(wizNameID) {
+		var chatPrompt = "type your message to " + wizNameID + " here";
+		var tempMessage = "";
+		while(tempMessage == "") {
+			tempMessage = prompt(chatPrompt,tempMessage);
+		} 
+		if(tempMessage) {
+			wiz($scope.wizardName).chat(wizNameID,tempMessage);
+		
+		} else return false;
+	
+	};
+	
 	
 	$scope.updateWizardName = function(nameToSet) {
 		
