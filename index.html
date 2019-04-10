@@ -13,11 +13,17 @@
 
     <link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
+	
+	<script src="js/dialog.js"></script>
+		<!-- <link rel="stylesheet" type="text/css" href="styles/base.css"> -->
+
+
 	<!--<link href="styles/googlefonts.css" rel="stylesheet">-->
 </head>
 
+
 <body>
-<button class="btn btn-xs btn-default" id="toggleStoryUI" onclick="$('#storyUIapp').toggle()">toggle story UI</button>	
+<!-- <button class="btn btn-xs btn-default" id="toggleStoryUI" onclick="$('#storyUIapp').toggle()">toggle story UI</button>	 -->
 
 
 
@@ -27,11 +33,8 @@
 <h2>Type CTRL+SHIFT+I to enter console mode for testing</h2><br />
 -->
 
-<p>
-	
-</p>
 
-<div class="center container-fluid d-none" ng-app="storyUIapp" id="storyUIapp" ng-controller="storyUICtrl" style="display:none;"
+<div class="center container-fluid d-none" ng-app="storyUIapp" id="storyUIapp" ng-controller="storyUICtrl" style="display:none;">
 
 <h1>Story UI</h1>
 <p>version 0.1</p>
@@ -189,69 +192,136 @@
 
 
 </div>
-
-
-	
-<div class="wrapper" id="playUIapp" ng-app="playUIapp" ng-controller="playUICtrl">
+<div class="wrapper1" id="playUIapp" ng-app="playUIapp" ng-controller="playUICtrl">
 
 	
     <!-- Story UI **************************************************************************************** -->
 	
-	<div class="outer-monitor"><div class="inner-monitor">
+
+
+		<div class="outer-monitor">
+			<div class="inner-monitor" id="wizardManagementConsole">
+
+				<div><p><button class="btn btn-success btn-block open-dialog">{{wizardName}} Play! </button></p></div>
+
+				<span>		
+					<!-- <span ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)"> -->
+					<span ng-repeat="wiz in wizards">
+						<button class="btn btn-info open-dialog" ng-click="updateWizardName(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;Load {{wiz.nameID}}</button>&nbsp;
+					</span>
+				</span>
+				<button class="btn btn-warning" id="newWizardButton" ng-click="updateWizardName()"><i class="glyphicon glyphicon-user"></i>&nbsp;New Wizard</button>&nbsp;
+				
+			</div>			
+		</div>
+	
+	
+	<!-- <div class="dialog" role="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description"> -->
 		<!--<label for="playHistory">Play History:</label><br />-->
 		<!--<div id="playHistory" class="size" style="overflow: auto; border: solid 1px; height:250px;"></div>-->
 
-		<h2></h2>
 
-			<div id="playUiConsole" ng-if="(wizardName!='')">
-				<h3>{{whatHappenedTitle}}</h3>
-				<span aria-live="polite">
-
-				<!--<h3>What Happened</h3>-->
-					<blockquote aria-live="polite" ng-bind-html="playScreenBody"></blockquote>
-				</span>
-				<h3>What Can You Do</h3>
-					<h4>Try Using Something</h4>
-						<ul>
-							<li ng-repeat="x in wizards[wizardName].bag.items | orderBy"><a href="" ng-click="playUI('use',x)" >Try using {{x}}</a></li>
-						</ul>
-						
-
-
-					<h4>Try Going Somewhere</h4>
-						<ul>
-							<li ng-repeat="(key,value) in wizards[wizardName].hidden.knownPlaces.value" ng-if="value"><a href="" ng-click="playUI(key)">Go to {{key}}</a></li>
-						</ul>
-
-					<h4>Text Another Wizard</h4>
-					<span ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)">
-						<button class="btn btn-default btn-xs" ng-click="chatWizard(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}</button>
-					</span>
-							
-					<h3>What's Your Status</h3>
-						<ul>
-							<li>{{"User: "+wizardName}}</li>
-							<li>Health: {{wizards[wizardName].health.value}}</li>
-							<li>Money: {{wizards[wizardName].money.value}}</li>
-						</ul>
-			</div>
-						
-			<div id="wizardManagementConsole">
-				<h3>Manage Wizards</h3>
-					<button class="btn btn-success" id="newWizardButton" ng-click="updateWizardName()"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}Create</button>&nbsp;
-					<span ng-if="numActiveWizards()>1">		
-						<span ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)">
-						<button class="btn btn-info" ng-click="updateWizardName(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;Switch to {{wiz.nameID}}</button>&nbsp;</span>
-					</span>
-			</div>						
-				
 		
-		<br />
+		<div id="playUiConsole" class="dialog" role="dialog">
+		
+
+			<p id="dialog-title" class="sr-only">Wizarding at City Hall</p>
+			<p id="dialog-description" class="sr-only">Description goes here</p>
+	
+			<span tabindex="0" class="sr-only" id="SRwhatHappened" aria-live="">{{playTextOnlyBody}}</span>
+
+				<ul class="nav nav-tabs" role="tablist" aria-describedBy="whatCanYouDo" >
+					<li class="dropdown" >
+						<button role="tab" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Go Somewhere
+						<span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<button ng-repeat="(key,value) in wizards[wizardName].hidden.knownPlaces.value" ng-if="value" role="tab" class="block" ng-click="playUI(key)">Go to {{key}}</button>
+						</ul>
+					</li>
+					<li class="dropdown" ng-if="wizards[wizardName].bag.items.length > 0">
+						<button role="tab" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Use Something
+						<span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<button  ng-repeat="x in wizards[wizardName].bag.items | orderBy" role="tab" class="block" ng-click="playUI('use',x)" >Try using {{x}}</button>
+						</ul>
+					</li>
+					<li class="dropdown" ng-if="numActiveWizards()>1">
+						<button role="tab" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Text Another Wizard
+						<span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<button ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)" role="tab"  class="block" ng-click="chatWizard(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}</button>
+						</ul>
+					</li>					
+				</ul>
+				
+				<div role="tabpanel">
+				<h3 id="whatHappenedTitle">{{whatHappenedTitle}}</h3>
+					<blockquote ng-bind-html="playScreenBody"></blockquote>
+				
+					<h4>Your Status</h3>
+					<ul>
+						<li>{{"User: "+wizardName}}</li>
+						<li>Health: {{wizards[wizardName].health.value}}</li>
+						<li>Money: {{wizards[wizardName].money.value}}</li>
+					</ul>
+				
+				</div>
+				
+				<br>
+				<button class="close-dialog btn btn-default btn-block">Close</button>
+				<!-- <h3 id="whatCanYouDo">What Can You Do</h3> -->
+					<!-- <h4 id="tryUsingSomething">Try Using Something</h4> -->
+						<!-- <ul aria-describedBy="tryUsingSomething"> -->
+							<!-- <li ng-repeat="x in wizards[wizardName].bag.items | orderBy"><button class="btn btn-info btn-xs" ng-click="playUI('use',x)" >Try using {{x}}</button></li> -->
+						<!-- </ul> -->
+						
+
+
+					<!-- <h4 id="tryGoingSomewhere">Try Going Somewhere</h4> -->
+						<!-- <ul class="nav nav-tabs" aria-describedBy="tryGoingSomewhere"> -->
+							<!-- <li ng-repeat="(key,value) in wizards[wizardName].hidden.knownPlaces.value" ng-if="value"><button class="btn btn-info brn-xs" ng-click="playUI(key)">Go to {{key}}</button></li> -->
+						<!-- </ul> -->
+
+					<!-- <h4 id="tryUsingSomething">Try Using Something</h4> -->
+
+						
+					<!-- <h4>Text Another Wizard</h4> -->
+					<!-- <span ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)"> -->
+						<!-- <button class="btn btn-default btn-xs" ng-click="chatWizard(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;{{wiz.nameID}}</button> -->
+					<!-- </span> -->
+							
+
+			<!-- </div> -->
+						
+			
 		<!--<label for="playScreen" >Play Messages:</label><br />-->
 		<!--<div id="playScreen" class="size" style="overflow: auto; solid;"></div>-->
+
+
+
+	<!-- <div class="dialog1" role="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description"> -->
+
+		<!-- <nav> -->
+			<!-- <ul> -->
+				<!-- <li><a href="one.html">Link One</a></li> -->
+				<!-- <li><a href="two.html">Link Two</a></li> -->
+				<!-- <li><a href="three.html">Link Three</a></li> -->
+			<!-- </ul> -->
+		<!-- </nav> -->
+	<!-- </div> -->
+
 		
-		
-	</div></div>
+		</div>
+	
+		<div class="dialog-overlay" tabindex="-1"></div>
+
+		<script>
+			var navDialogEl = document.querySelector('.dialog');
+			var dialogOverlay = document.querySelector('.dialog-overlay');
+			
+			var myDialog = new Dialog(navDialogEl, dialogOverlay);
+			myDialog.addEventListeners('.open-dialog', '.close-dialog');
+		</script>
 
 </div>
 
@@ -373,15 +443,20 @@ playUIapp.controller("playUICtrl", function($scope) {
 			
 			//always do a look when changing the name / changing the user
 			$scope.playUI('look');
+			$("#SRwhatHappened").focus();
+
 
 							
 		} else {
-			$('#sidebar').addClass('collapsed');
-			window.scrollTo(0,0);
+			//$('#sidebar').addClass('collapsed');
+			//window.scrollTo(0,0);
+			$("#SRwhatHappened").focus();
 			return false;
 		}
 		//$('#sidebar').addClass('collapsed');
-		window.scrollTo(0,0);
+		//window.scrollTo(0,0);
+		$("#SRwhatHappened").focus();
+
 	}
 	
 	
@@ -412,6 +487,7 @@ playUIapp.controller("playUICtrl", function($scope) {
 			actionResponseObj.body = actionResponseObj.full.slice(actionResponseObj.full.indexOf("\n")+2);
 			$scope.whatHappenedTitle = actionResponseObj.title;
 			$scope.playScreenBody = actionResponseObj.body.replace(/\n/g, "<br />");
+			$scope.playTextOnlyBody = actionResponseObj.title + " " + actionResponseObj.body;
 			//$("#whatHappenedTitle").text(actionResponseObj.title);
 			//alert(actionResponseObj.title);
 			responseMessage = nowDate.toLocaleString() + " - " + actionResponseObj.full.replace(/\n/g, "<br />");
@@ -426,7 +502,8 @@ playUIapp.controller("playUICtrl", function($scope) {
 		}
 		//scroll to the top and close sidebar if used any sidebar functions
 		//$('#sidebar').addClass('collapsed');
-		$(".inner-monitor").scrollTop(0);
+		$("#SRwhatHappened").focus();
+		//$(".inner-monitor").scrollTop(0);
 
 		
 	}
