@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<META NAME="Generator" CONTENT="TextPad 4.6">
+<META NAME="Author" CONTENT="?">
+<META NAME="Keywords" CONTENT="?">
+<META NAME="Description" CONTENT="?">
+
+    <link rel="stylesheet" type="text/css" href="styles/bootstrap.min.css">
+
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>	
+
+	
+
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#FF0000" VLINK="#800000" ALINK="#FF00FF" BACKGROUND="?">
+
+
+
+				
+				<nav>
+						<h4 class="controlPanels" href="#testdown1" tabindex="0" id="whereYouCanGo">Go Somewhere</h4>
+						<!-- <button data-toggle="collapse" target="#testdown">Go Somewhere</button> -->
+						<!-- <button role="tab" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Go Somewhere</button> -->
+						<!-- <span class="caret"></span></button> -->
+							<ul id="testdown1" class="collapse" aria-describedBy="whereYouCanGo">
+								<li ng-repeat="(key,value) in wizards[wizardName].hidden.knownPlaces.value" ng-if="value"><a href="" ng-click="playUI(key)" class="btn btn-default btn-block">Go to {{key}}</a></li>
+							</ul>
+						
+				</nav>
+				<nav ng-if="wizards[wizardName].bag.items.length > 0">
+						<h4 class="controlPanels" href="#testdown2" id="whatYouCanUse" tabindex="0" >Use Something</h4>
+						<!-- <button role="tab" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Go Somewhere</button> -->
+						<!-- <span class="caret"></span></button> -->
+						<ul id="testdown2" class="collapse" aria-describedBy="whatYouCanUse">
+							<li ng-repeat="x in wizards[wizardName].bag.items | orderBy"><a href="" class="btn btn-default btn-block" ng-click="playUI('use',x)" >Try using {{x}}</a></li>
+						</ul>
+				</nav>
+
+						
+						
+						<script>
+						$(".controlPanels").focus(function() {
+							var relatedSectionName = $(this).parent().children("ul").first();
+							$(relatedSectionName).addClass("in");
+							$(relatedSectionName).find("a").first().focus();
+							$(relatedSectionName).find("a").last().focusout(function() {
+								$(relatedSectionName).removeClass("in");
+							});
+
+						});
+						
+						
+						</script>
+
+</BODY>
+</HTML>
