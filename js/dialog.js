@@ -14,14 +14,18 @@ function Dialog(dialogEl, overlayEl) {
 }
 
 
-Dialog.prototype.open = function() {
+Dialog.prototype.open = function(elToCloseOnId) {
 
 	var Dialog = this;
 
 	this.dialogEl.removeAttribute('aria-hidden');
 	this.overlayEl.removeAttribute('aria-hidden');
 
-	this.focusedElBeforeOpen = document.activeElement;
+	if(elToCloseOnId == undefined) {
+		this.focusedElBeforeOpen = document.activeElement;
+	} else {
+		this.focusedElBeforeOpenId = elToCloseOnId;
+	}
 
 	this.dialogEl.addEventListener('keydown', function(e) {
 		Dialog._handleKeyDown(e);
@@ -36,10 +40,13 @@ Dialog.prototype.open = function() {
 
 Dialog.prototype.close = function() {
 
+	
 	this.dialogEl.setAttribute('aria-hidden', true);
 	this.overlayEl.setAttribute('aria-hidden', true);
 
-	if ( this.focusedElBeforeOpen ) {
+	if ( this.focusedElBeforeOpenId != undefined ) {
+		document.getElementById(this.focusedElBeforeOpenId).focus();
+	} else if ( this.focusedElBeforeOpen ) {
 		this.focusedElBeforeOpen.focus();
 	}
 };

@@ -201,16 +201,18 @@
 
 		<div class="outer-monitor" role="application">
 			<div class="inner-monitor" id="wizardManagementConsole">
-
-				<div><p><button id="playButton" class="btn btn-success btn-block open-dialog">{{wizardName}} Play! </button></p></div>
-
+			
+				<!-- <div><p><button id="playButton" class="btn btn-success btn-block open-dialog" ng-click="myDialog.open();">{{wizardName}} Play! </button></p></div> -->
+				<button class="btn btn-warning btn-block" id="newWizardButton" ng-click="updateWizardName()"><i class="glyphicon glyphicon-user"></i>&nbsp;New Wizard</button>
+				<br>
+				
 				<span>		
 					<!-- <span ng-repeat="wiz in wizards" ng-if="(wizards[wizardName].nameID != wiz.nameID)"> -->
 					<span ng-repeat="wiz in wizards">
-						<button class="btn btn-info open-dialog" ng-click="updateWizardName(wiz.nameID)"><i class="glyphicon glyphicon-user"></i>&nbsp;Load {{wiz.nameID}}</button>&nbsp;
+						<button class="btn btn-success load-wizard-button" id="play-{{wiz.nameID}}" ng-click="updateWizardName(wiz.nameID); myDialog.open();"><i class="glyphicon glyphicon-user"></i>&nbsp;Play {{wiz.nameID}}!</button>&nbsp;
 					</span>
 				</span>
-				<button class="btn btn-warning" id="newWizardButton" ng-click="updateWizardName()"><i class="glyphicon glyphicon-user"></i>&nbsp;New Wizard</button>&nbsp;
+				
 				
 			</div>			
 		</div>
@@ -268,7 +270,7 @@
 			
 			<br>
 			<div class="focusoutTest">
-				<button class="close-dialog btn btn-default btn-block" >Back to Start</button>
+				<button class="btn btn-default btn-block" ng-click="myDialog.close();">Back to Start</button>
 			</div>
 				
 		</div>
@@ -276,16 +278,8 @@
 		<div class="dialog-overlay" tabindex="-1"></div>
 
 		<script>
-			var navDialogEl = document.querySelector('.dialog');
-			var dialogOverlay = document.querySelector('.dialog-overlay');
 			
-			var myDialog = new Dialog(navDialogEl, dialogOverlay);
-			myDialog.addEventListeners('.open-dialog', '.close-dialog');
-			$("#newWizardButton").focus();
-			
-			<!-- $(".focusoutTest").focusout(function() { -->
-				<!-- $("#playUiConsole").find("ul.collapse").removeClass("in"); -->
-			<!-- }); -->
+
 			
 		</script>
 
@@ -298,17 +292,7 @@
 
 $(document).ready(function () {
 
-
-
-
-
-    /*$('.toggleSidebar').on('click', function () {
-        if(!$('#sidebar').hasClass('active')) {
-			$('#sidebar').toggleClass('active');
-		}
-		//$('#newWizardButton').focus();		
-    });*/
-
+	$('#newWizardButton').focus();		
 
 	
 });
@@ -379,6 +363,18 @@ playUIapp.controller("playUICtrl", function($scope) {
 	};
 
 				
+	//initialize dialogue interfaces
+	var navDialogEl = document.querySelector('.dialog');
+	var dialogOverlay = document.querySelector('.dialog-overlay');
+	
+	//attach the modal dialogue to $scope so that I can call open/close with ng-click.
+	$scope.myDialog = new Dialog(navDialogEl, dialogOverlay);
+	<!-- myDialog.addEventListeners('.open-dialog', '.close-dialog'); -->
+	
+	//$("#newWizardButton").focus();
+	//set up ng-click functions for opening and closing the modal
+	
+	
 				
 				
 	$scope.toggleSidebar = function (){
@@ -448,19 +444,21 @@ playUIapp.controller("playUICtrl", function($scope) {
 			
 			//always do a look when changing the name / changing the user
 			$scope.playUI('look');
-			$("#playButton").focus();
-
+			//$("#playButton").focus();
+			$scope.myDialog.open('play-'+tempWizardName);
 
 							
 		} else {
 			//$('#sidebar').addClass('collapsed');
 			//window.scrollTo(0,0);
-			$("#playButton").focus();
+			//$scope.myDialog.open();			
+			//$("#playButton").focus();
 			return false;
 		}
 		//$('#sidebar').addClass('collapsed');
 		//window.scrollTo(0,0);
-		$("#playButton").focus();
+		//$scope.myDialog.open();		
+		//$("#playButton").focus();
 
 	}
 	
