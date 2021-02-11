@@ -119,7 +119,11 @@ var knownPlaces = function() {
 }
 
 knownPlaces.prototype.add = function(placeName) {
-	this.value[placeName] = true; // if true is now known
+	let placeNameArray = placeName.split("|");
+
+	this.value[placeNameArray[0]] = {"status": true}; 
+
+	if(placeNameArray[1] || false) this.value[placeNameArray[0]]["displayName"] = placeNameArray[1];
 	return this;
 }
 
@@ -127,11 +131,11 @@ knownPlaces.prototype.remove = function(placeName) {
 	if (placeName == undefined) return false;
 	if (placeName == "_ALL_") {
 		for (var currentKnownPlace in this.value) {
-			this.value[currentKnownPlace] = false;
+			this.value[currentKnownPlace].status = false;
 		}
 		return this.value;
 	} else {
-		this.value[placeName] = false;  //if false then it means it was once known but no longer
+		this.value[placeName].status = false;  //if false then it means it was once known but no longer
 		return this.value;
 	}
 	
@@ -140,15 +144,17 @@ knownPlaces.prototype.remove = function(placeName) {
 
 // IF placeID type = num, then use actual placeID from placesDB.  If placeID type = string, then lookup string from placesDB and return for the function to act upon.
 knownPlaces.prototype.has = function(placeName) {
-	if(this.value[placeName] != undefined || this.value[placeName]) {
-		return true;
+	if(this.value[placeName] != undefined || this.value[placeName].status) {
+		return this.value[placeName];
 	} else {
-		return false;
+		return {
+			"status":false,
+		};
 	}
 }
 
 knownPlaces.prototype.hasNot = function(place) {
-	if(this.value[placeName] != undefined || this.value[placeName]) {
+	if(this.value[placeName] != undefined || this.value[placeName].status) {
 		return false;
 	} else {
 		return true;
@@ -417,12 +423,13 @@ var geo = function(wizard) {
 			console.log("no direction provided to geo.go()");
 			return false;
 		}
-		if(thisWizard.hidden.knownPlaces.has(direction)) {
-			thisWizard.log("@" + thisWizard.nameID + " goes to the " + direction + "...\n\n");
+		let knownPlaceTravellingTo = thisWizard.hidden.knownPlaces.has(direction);
+		if(knownPlaceTravellingTo.status) {
+			thisWizard.log("@" + thisWizard.nameID + " goes to the " + (knownPlaceTravellingTo.displayName || direction) + "...\n\n");
 			thisWizard.geo.moveTo({"location" : direction});
 			map.reactTo(thisWizard);			
 		} else {
-			thisWizard.log("@" + thisWizard.nameID + " tries to go to the " + direction + "...\n\n");
+			thisWizard.log("@" + thisWizard.nameID + " tries to go to the " + (knownPlaceTravellingTo.displayName || direction) + "...\n\n");
 			thisWizard.log("Wait - you have no idea where that is...");
 		}
 		return thisWizard.unread();

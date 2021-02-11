@@ -260,6 +260,36 @@ var storiesDBobj = {
 	"smellyCave": [
 		{
 			location: "smellyCave",
+			story: "Grog starts running (well, more like a fast walk..) towards you.  You try waving the torch around hoping it will scare the troll off.  Grog starts to slow and you think this might work.  But instead of pulling back in fear, Grog starts to follow the pattern of your torch swinging.  Grog begins to sway aback and forth, hypnotized by the moving light.  A second later Grog the Gross very ungracefully flops to the floor, back asleep.  You watch the peaceful troll for a moment, a bit mezmerized yourself... \n\nUntil Grog starts to twitch again!!",
+			order: 3,
+			conditions: [
+				{aspect:"tags",action:"has",value:"angryGrog"},
+				{aspect:"bag",action:"using",value:"torch"},
+				{aspect:"bag",action:"hasNot",value:"tiny troll"},
+			],
+			impacts: [
+				{aspect:"knownPlaces",action:"add",value:"openField|West"},
+				{aspect:"knownPlaces",action:"add",value:"caveAbove|Stairway"},
+				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall|Mirror"},
+			],
+		},
+		{
+			location: "smellyCave",
+			story: "Better think fast or you'll soon become Grog soup!!",
+			order: 3,
+			conditions: [
+				{aspect:"tags",action:"has",value:"angryGrog"},
+				{aspect:"bag",action:"hasNot",value:"tiny troll"},
+				{aspect:"bag",action:"notUsing",value:"potion"},
+			],
+			impacts: [
+				{aspect:"knownPlaces",action:"add",value:"openField|West"},
+				{aspect:"knownPlaces",action:"add",value:"caveAbove|Stairway"},
+				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall|Mirror"},
+			],
+		},
+		{
+			location: "smellyCave",
 			story: "The stink of the cooridor brings back your childhood memories of your classes with Professor Snape, and you suddenly get an idea of what that glowing potion does.  You uncork the potion and throw it at the Troll...  The troll begins to turn and spin and faster and faster.  Five seconds later the troll has shrunken to the size of a shopkin!  You tie him up and place him amongst your things.  You also grab the gold behind him!",
 			order: 2,
 			conditions: [
@@ -270,25 +300,27 @@ var storiesDBobj = {
 				{aspect:"bag",action:"remove",value:"potion"},
 				{aspect:"money",action:"add",value:500},
 				{aspect:"bag",action:"add",value:"tiny troll"},
-				{aspect:"knownPlaces",action:"add",value:"openField"},
-				{aspect:"knownPlaces",action:"add",value:"caveAbove"},
-				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall"},
+				{aspect:"tags",action:"remove",value:"angryGrog"},
+				{aspect:"knownPlaces",action:"add",value:"openField|East"},
+				{aspect:"knownPlaces",action:"add",value:"caveAbove|Stairway"},
+				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall|Mirror"},
 				
 
 			],
 		},
 		{
 			location: "smellyCave",
-			story: "You decide that you can't leave without the gold and think that there might be something useful in your 'useless spellbook'.  You quickly shuffle through it and find the perfect spell - invisibility!  You begin the incantation...  Ah-lah-ka-kaa-ah-Choo! Oh no, instead of turning invisible, you placed a truth charm on the troll.  It begins to speak:  'I am Grog.  The Gross.  I can't find a job, so instead I spend my time trolling people on the nets.  And now I will troll you!  Quick - Do Something!!",
+			story: "You decide that you can't leave without the gold and think that there might be something useful in your 'useless spellbook'.  You quickly shuffle through it and find the perfect spell - invisibility!  You begin the incantation...  Ah-lah-ka-kaa-ah-Choo! Oh no, instead of turning invisible, you placed a truth charm on the troll.  It begins to speak:  'I am Grog.  The Gross.  I can't find a job, so instead I spend my time trolling people on the nets.  And now I will troll you! \n\n\ Quick - Do Something!!",
 			order: 3,
 			conditions: [
 				{aspect:"bag",action:"using",value:"useless spellbook"},
 				{aspect:"bag",action:"hasNot",value:"tiny troll"}
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"openField"},
-				{aspect:"knownPlaces",action:"add",value:"caveAbove"},
-				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall"},
+				{aspect:"tags",action:"add",value:"angryGrog"},
+				{aspect:"knownPlaces",action:"add",value:"openField|West"},
+				{aspect:"knownPlaces",action:"add",value:"caveAbove|Stairway"},
+				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall|Mirror"},
 				
 
 			],
@@ -301,9 +333,9 @@ var storiesDBobj = {
 				{aspect:"bag",action:"has",value:"tiny troll"}
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall"},
-				{aspect:"knownPlaces",action:"add",value:"openField"},
-				{aspect:"knownPlaces",action:"add",value:"caveAbove"},
+				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall|Mirror"},
+				{aspect:"knownPlaces",action:"add",value:"openField|East"},
+				{aspect:"knownPlaces",action:"add",value:"caveAbove|Stairway"},
 			],
 		},
 		{
@@ -315,9 +347,9 @@ var storiesDBobj = {
 				{aspect:"bag",action:"hasNot",value:"tiny troll"}
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"openField"},
-				{aspect:"knownPlaces",action:"add",value:"caveAbove"},
-				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall"},
+				{aspect:"knownPlaces",action:"add",value:"openField|East"},
+				{aspect:"knownPlaces",action:"add",value:"caveAbove|Stairway"},
+				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall|Mirror"},
 
 			
 			],
@@ -331,9 +363,9 @@ var storiesDBobj = {
 			],
 			impacts: [
 				{aspect:"bag",action:"add",value:"torch"},
-				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall"},
-				{aspect:"knownPlaces",action:"add",value:"openField"},
-				{aspect:"knownPlaces",action:"add",value:"caveAbove"},
+				{aspect:"knownPlaces",action:"add",value:"mirrorOnTheWall|Mirror"},
+				{aspect:"knownPlaces",action:"add",value:"openField|East"},
+				{aspect:"knownPlaces",action:"add",value:"caveAbove|Stairway"},
 
 			],
 		},
@@ -405,9 +437,9 @@ var storiesDBobj = {
 
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"smellyCave"},
-				{aspect:"knownPlaces",action:"add",value:"wolfField"},
-				{aspect:"knownPlaces",action:"add",value:"lockedRoomInEast"},
+				{aspect:"knownPlaces",action:"add",value:"smellyCave|West"},
+				{aspect:"knownPlaces",action:"add",value:"wolfField|North"},
+				{aspect:"knownPlaces",action:"add",value:"lockedRoomInEast|East"},
 				
 			]
 		},
@@ -421,9 +453,9 @@ var storiesDBobj = {
 				{aspect:"places",action:"hasNot",value:"wolfField"}
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"smellyCave"},
-				{aspect:"knownPlaces",action:"add",value:"wolfField"},
-				{aspect:"knownPlaces",action:"add",value:"lockedRoomInEast"},
+				{aspect:"knownPlaces",action:"add",value:"smellyCave|West"},
+				{aspect:"knownPlaces",action:"add",value:"wolfField|North"},
+				{aspect:"knownPlaces",action:"add",value:"lockedRoomInEast|East"},
 			
 			]
 		},		
@@ -436,9 +468,9 @@ var storiesDBobj = {
 				//{aspect:"places",action:"has",value:"this"}
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"smellyCave"},
-				{aspect:"knownPlaces",action:"add",value:"wolfField"},
-				{aspect:"knownPlaces",action:"add",value:"lockedRoomInEast"},
+				{aspect:"knownPlaces",action:"add",value:"smellyCave|West"},
+				{aspect:"knownPlaces",action:"add",value:"wolfField|North"},
+				{aspect:"knownPlaces",action:"add",value:"lockedRoomInEast|East"},
 
 			]
 		},
@@ -454,7 +486,7 @@ var storiesDBobj = {
 				{aspect:"bag",action:"hasNot",value:"tiny troll"}
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"openField"},
+				{aspect:"knownPlaces",action:"add",value:"openField|South"},
 				
 			]
 		},	
@@ -470,7 +502,7 @@ var storiesDBobj = {
 			impacts: [
 				{aspect:"bag",action:"remove",value:"tiny troll"},
 				{aspect:"bag",action:"add",value:"sword of uke"},
-				{aspect:"knownPlaces",action:"add",value:"openField"},
+				{aspect:"knownPlaces",action:"add",value:"openField|South"},
 				
 			]
 		},
@@ -556,7 +588,7 @@ var storiesDBobj = {
 			conditions: [
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"cliffUnderPedestle"},
+				{aspect:"knownPlaces",action:"add",value:"cliffUnderPedestle|Down"},
 
 			],		
 		},
@@ -583,8 +615,8 @@ var storiesDBobj = {
 				{aspect:"bag",action:"using",value:"sword of uke"}
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"openField"},
-				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast"},
+				{aspect:"knownPlaces",action:"add",value:"openField|Outside"},
+				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast|Upstairs"},
 				{aspect:"tags",action:"add",value:"unlocked.lockedRoomInEast"}	
 			
 			],		
@@ -605,7 +637,7 @@ var storiesDBobj = {
 				{aspect:"teleport",action:"",value:"home"},
 				{aspect:"places",action:"remove",value:"_ALL_"},
 				{aspect:"stories",action:"remove",value:"_ALL_"},
-				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast"},
+				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast|Upstairs"},
 			],		
 		},		
 		{
@@ -617,7 +649,7 @@ var storiesDBobj = {
 				{aspect:"places",action:"has",value:"this"},			
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast"},
+				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast|Upstairs"},
 			],		
 		},			
 		{
@@ -636,7 +668,7 @@ var storiesDBobj = {
 			conditions: [
 			],
 			impacts: [
-				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast"},
+				{aspect:"knownPlaces",action:"add",value:"upstairs.lockedRoomInEast|Balcony"},
 			],		
 		},
 

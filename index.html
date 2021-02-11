@@ -238,7 +238,7 @@
 					<!-- <button role="tab" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Go Somewhere</button> -->
 					<!-- <span class="caret"></span></button> -->
 						<ul aria-describedBy="whereYouCanGo" class="collapsablePanel sr-only" role="menu">
-							<li ng-repeat="(key,value) in wizards[wizardName].hidden.knownPlaces.value" ng-if="value"><button ng-click="playUI(key)" ng-blur="closeAll($event)" ng-focus="openOnArrive($event)"  class="btn btn-default btn-block">Go to {{key}}</button></li>
+							<li ng-repeat="(key,value) in wizards[wizardName].hidden.knownPlaces.value" ng-if="value.status"><button ng-click="playUI(key)" ng-blur="closeAll($event)" ng-focus="openOnArrive($event)"  class="btn btn-default btn-block">Go to {{value.displayName || key}}</button></li>
 						</ul>
 					
 			</div>
@@ -369,7 +369,7 @@ playUIapp.controller("playUICtrl", function($scope) {
 	
 	//attach the modal dialogue to $scope so that I can call open/close with ng-click.
 	$scope.myDialog = new Dialog(navDialogEl, dialogOverlay);
-	<!-- myDialog.addEventListeners('.open-dialog', '.close-dialog'); -->
+	// myDialog.addEventListeners('.open-dialog', '.close-dialog');
 	
 	//$("#newWizardButton").focus();
 	//set up ng-click functions for opening and closing the modal
