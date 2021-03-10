@@ -233,7 +233,7 @@
 			
 			
 			<div class="focusoutTest">
-					<h4 id="whereYouCanGo">Go Somewhere</h4>
+					<h4 id="whereYouCanGo" ng-click="toggleChildren($event)">Go Somewhere</h4>
 					<!-- <button data-toggle="collapse" target="#testdown">Go Somewhere</button> -->
 					<!-- <button role="tab" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Go Somewhere</button> -->
 					<!-- <span class="caret"></span></button> -->
@@ -243,7 +243,7 @@
 					
 			</div>
 			<div ng-if="wizards[wizardName].bag.items.length > 0" class="focusoutTest">
-					<h4 id="whatYouCanUse">Use Something</h4>
+					<h4 id="whatYouCanUse" ng-click="toggleChildren($event)">Use Something</h4>
 					<!-- <button role="tab" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Go Somewhere</button> -->
 					<!-- <span class="caret"></span></button> -->
 					<ul aria-describedBy="whatYouCanUse" role="menu" class="collapsablePanel sr-only">
@@ -251,7 +251,7 @@
 					</ul>
 			</div>
 			<div ng-if="numActiveWizards()>1" class="focusoutTest">
-					<h4 id="whoYouCanText">Text Someone</h4>
+					<h4 id="whoYouCanText" ng-click="toggleChildren($event)">Text Someone</h4>
 					<!-- <button role="tab" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-haspopup="true">Go Somewhere</button> -->
 					<!-- <span class="caret"></span></button> -->
 					<ul aria-describedBy="whoYouCanText" class="collapsablePanel sr-only" role="menu">
@@ -260,7 +260,7 @@
 			</div>
 
 			<div class="focusoutTest">
-					<h4 id="yourStatus">Your Status</h4>
+					<h4 id="yourStatus" ng-click="toggleChildren($event)">Your Status</h4>
 					<ul aria-describedBy="yourStatus" class="collapsablePanel sr-only" aria-role="article">
 						<li tabindex="0" ng-focus="openOnArrive($event)" ng-blur="closeAll($event)">{{"User: "+wizardName}}</li>
 						<li tabindex="0" ng-focus="openOnArrive($event)" ng-blur="closeAll($event)">Health: {{wizards[wizardName].health.value}}</li>
@@ -331,22 +331,20 @@ playUIapp.controller("playUICtrl", function($scope) {
 	var devWizardHistory = {};
 	
 	$scope.toggleChildren = function(e) {
-			//open children panels
-			var childPanels = $(e.currentTarget).parent().siblings("ul.collapsablePanel");
-			console.log(childPanels);
+			
+			//get children panels
+			var childPanels = $(e.currentTarget).siblings("ul.collapsablePanel");
 			
 			if(childPanels.hasClass("sr-only")) {
+				//close all panels, but open selected
+				$("#playUiConsole").find("ul.collapsablePanel").addClass("sr-only");				
 				childPanels.removeClass("sr-only");
 			} else {
-				childPanels.addClass("sr-only");
+				//close all panels
+				$("#playUiConsole").find("ul.collapsablePanel").addClass("sr-only");				
+				// do nothing else, sr-only class already added to everything
+				// childPanels.addClass("sr-only");
 			}
-			/*
-			if(childPanels.hasClass("d-none")) {
-				childPanels.removeClass("d-none");
-			} else {
-				childPanels.addClass("d-none");
-			}
-			*/
 
 	};
 
@@ -356,6 +354,13 @@ playUIapp.controller("playUICtrl", function($scope) {
 			$(e.currentTarget).parents("ul.collapsablePanel").removeClass("sr-only");
 
 	};
+	
+	$scope.toggle = function(e) {
+			//open current panels
+			$(e.currentTarget).parents("ul.collapsablePanel").removeClass("sr-only");
+
+	};
+
 	
 	$scope.closeAll = function() {
 			//close all panels

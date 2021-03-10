@@ -363,12 +363,12 @@ var health = function() {
 }
 
 health.prototype.add = function(amount) {
-	this.value = this.value + amount;
+	this.value = parseInt(this.value) + parseInt(amount);
 	return this.value;
 }
 
 health.prototype.remove = function(amount) {
-	this.value = this.value - amount;
+	this.value = parseInt(this.value) - parseInt(amount);
 	return this.value;
 }
 
@@ -388,12 +388,12 @@ var money = function() {
 }
 
 money.prototype.add = function(amount) {
-	this.value = this.value + amount;
+	this.value = parseInt(this.value) + parseInt(amount);
 	return this.value;
 }
 
 money.prototype.remove = function(amount) {
-	this.value = this.value - amount;
+	this.value = parseInt(this.value) - parseInt(amount);
 	return this.value;
 }
 
@@ -1290,6 +1290,7 @@ map.reactTo = function(wizard) {
 									break;
 								case 'remove':
 									wizard.bag.remove(placeWizardIsIn.stories[k].impacts[i].value);
+									impactMessages += bulletSymbol + placeWizardIsIn.stories[k].impacts[i].value + " has been removed from your bag.";
 									break;
 							}
 							break;
@@ -1302,6 +1303,7 @@ map.reactTo = function(wizard) {
 									break;
 								case 'remove':
 									wizard.money.remove(placeWizardIsIn.stories[k].impacts[i].value);
+									impactMessages += bulletSymbol + placeWizardIsIn.stories[k].impacts[i].value + " has been removed from your purse.";
 									break;
 							}
 							break;
@@ -1313,6 +1315,7 @@ map.reactTo = function(wizard) {
 									break;
 								case 'remove':
 									wizard.health.remove(placeWizardIsIn.stories[k].impacts[i].value);
+									impactMessages += bulletSymbol + placeWizardIsIn.stories[k].impacts[i].value + " has been removed from your health.";
 									break;
 							}
 							break;
