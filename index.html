@@ -224,12 +224,14 @@
 			<p id="dialog-title" class="sr-only">Wizarding at City Hall</p>
 			<p id="dialog-description" class="sr-only">Description goes here</p>
 			
-			<span tabindex="0" class="sr-only" id="SRwhatHappened" aria-live="">{{playTextOnlyBody}}</span>
-		
-			<div aria-hidden="true">
-				<h3 id="whatHappenedTitle">{{whatHappenedTitle}}</h3>
-					<blockquote ng-bind-html="playScreenBody"></blockquote>
-			</div>
+                        <span tabindex="0" class="sr-only" id="SRwhatHappened" aria-live="">{{playTextOnlyBody}}</span>
+
+                        <div id="playHistory" class="play-history"></div>
+
+                        <div aria-hidden="true" id="playScreen">
+                                <h3 id="whatHappenedTitle">{{whatHappenedTitle}}</h3>
+                                <blockquote ng-bind-html="playScreenBody"></blockquote>
+                        </div>
 			
 			
 			<div class="focusoutTest">
@@ -269,11 +271,15 @@
 			</div>
 			
 			<br>
-			<div class="focusoutTest">
-				<button class="btn btn-default btn-block" ng-click="myDialog.close();">Back to Start</button>
-			</div>
-				
-		</div>
+                        <div class="focusoutTest">
+                                <button class="btn btn-default btn-block" ng-click="myDialog.close();">Back to Start</button>
+                        </div>
+
+                        <div class="command-input">
+                                <input id="commandBox" type="text" class="form-control" placeholder="Type a command and press Enter" ng-model="commandText" ng-keypress="$event.which === 13 && execCommand()" />
+                        </div>
+
+                </div>
 	
 		<div class="dialog-overlay" tabindex="-1"></div>
 
@@ -315,7 +321,7 @@ playUIapp.controller("playUICtrl", function($scope) {
 		for (wizes in $scope.wizards) {wizCount++};
 		return wizCount;
 	}
-	$scope.whatHappenedTitle = "";
+        $scope.whatHappenedTitle = "";
 	/*
 		'boeltjen': {
 			bag: {
@@ -327,8 +333,29 @@ playUIapp.controller("playUICtrl", function($scope) {
 			}
 		}
 	};*/
-	var wizardNamePrompt = "What do they call you fine wizard?";
-	var devWizardHistory = {};
+        var wizardNamePrompt = "What do they call you fine wizard?";
+        var devWizardHistory = {};
+
+        $scope.commandText = "";
+        $scope.execCommand = function() {
+                var cmd = ($scope.commandText || "").trim();
+                if(!cmd) return;
+                $scope.commandText = "";
+                var parts = cmd.split(/\s+/);
+                var action = parts[0].toLowerCase();
+                var param = parts.slice(1).join(" ");
+                if(action === 'go') {
+                        $scope.playUI(param);
+                } else if(action === 'use') {
+                        $scope.playUI('use', param);
+                } else if(action === 'look') {
+                        $scope.playUI('look');
+                } else if(action === 'text') {
+                        $scope.chatWizard(param);
+                } else {
+                        $scope.playUI(action);
+                }
+        };
 	
 	$scope.toggleChildren = function(e) {
 			
@@ -499,14 +526,12 @@ playUIapp.controller("playUICtrl", function($scope) {
 			//$("#whatHappenedTitle").text(actionResponseObj.title);
 			//alert(actionResponseObj.title);
 			responseMessage = nowDate.toLocaleString() + " - " + actionResponseObj.full.replace(/\n/g, "<br />");
-			//$("#playScreen").html(actionResponseObj.body);
-			/*
-			if(actionResponseObj.body) {
-				//only add to the history if the screen isn't blank.
-				$("#playHistory").append("<hr style='height:1px;border:none;color:#333;background-color:#333;' />" + responseMessage + "<br>" );
-			}
-			$("#playHistory").scrollTop(500000);
-			*/
+                        //$("#playScreen").html(actionResponseObj.body);
+                        if(actionResponseObj.body) {
+                                //only add to the history if the screen isn't blank.
+                                $("#playHistory").append("<hr style='height:1px;border:none;color:#333;background-color:#333;' />" + responseMessage + "<br>" );
+                        }
+                        $("#playHistory").scrollTop(500000);
 		}
 		//scroll to the top and close sidebar if used any sidebar functions
 		//$('#sidebar').addClass('collapsed');

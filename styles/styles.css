@@ -207,7 +207,19 @@ body {
 
 .dialog-overlay:not([aria-hidden="true"]),
 .dialog:not([aria-hidden="true"]) {
-	display: block;
+        display: block;
+}
+
+.play-history {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.command-input {
+    margin-top: 10px;
 }
 
 
